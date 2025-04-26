@@ -836,6 +836,7 @@ void AM_updateLightLev(void)
 //
 void AM_Ticker (void)
 {
+    printf("AM_Ticker\n"); 
 
     if (!automapactive)
         return;

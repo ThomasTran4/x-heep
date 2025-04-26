@@ -949,6 +949,7 @@ void ST_updateWidgets(void)
 
 void ST_Ticker (void)
 {
+    printf("ST_Ticker\n");
 
     st_clock++;
     st_randomnumber = M_Random();

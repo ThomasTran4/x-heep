@@ -478,6 +478,7 @@ extern uint32_t frame_time_fps;
 
 void HU_Ticker(void)
 {
+    printf("HU_Ticker\n"); 
     int i, rc;
     char c;
 

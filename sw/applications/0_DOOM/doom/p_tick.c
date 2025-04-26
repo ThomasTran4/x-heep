@@ -103,15 +103,17 @@ void P_FreeMobj (mobj_t* mobj);
 //
 void P_RunThinkers (void)
 {
+    printf("P_RunThinkers\n"); 
     thinker_t *currentthinker, *nextthinker;
 
     currentthinker = thinkercap.next;
+    printf("P_RunThinkers before while\n"); 
     while (currentthinker != &thinkercap)
     {
         if ( currentthinker->function.acv == (actionf_v)(-1) )
         {
             // time to remove it
-            // PRINTF("Free thinker\n");
+            PRINTF("Free thinker\n");
             nextthinker = currentthinker->next;
             currentthinker->next->prev = currentthinker->prev;
             currentthinker->prev->next = currentthinker->next;
@@ -120,7 +122,7 @@ void P_RunThinkers (void)
         else if ( currentthinker->function.acv == (actionf_v)(-2) )
         {
             // time to remove it
-            // PRINTF("Free mobj\n");
+            PRINTF("Free mobj\n");
             nextthinker = currentthinker->next;
             currentthinker->next->prev = currentthinker->prev;
             currentthinker->prev->next = currentthinker->next;
@@ -128,8 +130,13 @@ void P_RunThinkers (void)
         }
         else
         {
+            printf("Else \n"); 
             if (currentthinker->function.acp1)
-                currentthinker->function.acp1 (currentthinker);
+            {
+                printf("Calling function pointer at address: %p\n", currentthinker->function.acp1); 
+                currentthinker->function.acp1 (currentthinker); //problem here when calling P_MobjThinker
+                printf("Finished function\n");
+            } 
             nextthinker = currentthinker->next;
         }
         currentthinker = nextthinker;
@@ -145,6 +152,8 @@ void P_RunThinkers (void)
 void P_Ticker (void)
 {
     int         i;
+
+    printf("P_Ticker\n"); 
     
     // run the tic
     if (paused)
@@ -159,13 +168,16 @@ void P_Ticker (void)
         return;
     }
     
-                
+    printf("In P_Ticker before for\n");            
     for (i=0 ; i<MAXPLAYERS ; i++)
         if (playeringame[i])
             P_PlayerThink (&players[i]);
                         
+    printf("In P_Ticker before P_RunThinkers\n");
     P_RunThinkers ();
+    printf("In P_Ticker before P_UpdateSpecials\n");
     P_UpdateSpecials ();
+    printf("In P_Ticker before P_RespawnSpecials\n");
     P_RespawnSpecials ();
 
     // for par times
