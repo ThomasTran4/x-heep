@@ -57,5 +57,6 @@ void N_free(void *ptr, size_t size)
     {
         free(ptr);
         heap_used -= size;
+        PRINTF("free %d -> %p (heap used: %lu/%d)\n", size, ptr, heap_used, X_HEEP_HEAP_LIMIT);
     }
 }

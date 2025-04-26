@@ -970,11 +970,11 @@ void G_Ticker (void)
           case ga_nothing:
             break;
         }
-    }
+    } 
 
     // get commands, check consistancy,
     // and build new consistancy check
-    buf = (gametic/ticdup)%BACKUPTICS;
+    buf = (gametic/ticdup)%BACKUPTICS; 
 
     for (i=0 ; i<MAXPLAYERS ; i++)
     {
@@ -1074,8 +1074,7 @@ X-HEEP COMMENT END */
         }
     }
 
-    // Have we just finished displaying an intermission screen?
-
+    // Have we just finished displaying an intermission screen? 
     if (oldgamestate == GS_INTERMISSION && gamestate != GS_INTERMISSION)
     {
         WI_End();
@@ -1088,6 +1087,7 @@ X-HEEP COMMENT END */
     switch (gamestate)
     {
       case GS_LEVEL:
+        printf("In G_ticker before switch, gamestate : %i\n", gamestate);
         P_Ticker ();
         ST_Ticker ();
         AM_Ticker ();

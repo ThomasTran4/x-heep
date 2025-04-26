@@ -482,6 +482,8 @@ void D_DoomLoop (void)
         G_BeginRecording ();
     */
     PRINTF("D_DoomLoop\n");
+    Z_Init(); //X-HEEP comment : Since nothing is stored in heap using Z_malloc before this is declared here, otherwise decalare it before (seems to make the program crash TODO investigate why)
+    
     main_loop_started = true;
 
     //I_SetWindowTitle(gamedescription); //useless 

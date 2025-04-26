@@ -377,8 +377,8 @@ void P_LoadSubsectors (int lump)
     subsector_t*        ss;
         
     numsubsectors = W_LumpLength (lump) / sizeof(mapsubsector_t);
-    subsectors = N_malloc(numsubsectors*sizeof(subsector_t));
-    //subsectors = Z_Malloc (numsubsectors*sizeof(subsector_t),PU_LEVEL,0);       
+    //subsectors = N_malloc(numsubsectors*sizeof(subsector_t));
+    subsectors = Z_Malloc (numsubsectors*sizeof(subsector_t),PU_LEVEL,0);       
     data = W_CacheLumpNum (lump,PU_STATIC);
         
     ms = (mapsubsector_t *)data;
@@ -413,8 +413,8 @@ void P_LoadSectors (int lump)
     sector_t*           ss;
         
     numsectors = W_LumpLength (lump) / sizeof(mapsector_t);
-    sectors = N_malloc(numsectors*sizeof(sector_t)); 
-    //sectors = Z_Malloc (numsectors*sizeof(sector_t),PU_LEVEL,0);        
+    //sectors = N_malloc(numsectors*sizeof(sector_t)); 
+    sectors = Z_Malloc (numsectors*sizeof(sector_t),PU_LEVEL,0);        
     memset (sectors, 0, numsectors*sizeof(sector_t));
     data = W_CacheLumpNum (lump,PU_STATIC);
 
@@ -568,8 +568,8 @@ void P_LoadLineDefs (int lump)
     fixed_t             dx, dy;
         
     numlines = W_LumpLength (lump) / sizeof(maplinedef_t);
-    lines = N_malloc(numlines*sizeof(line_t));
-    //lines = Z_Malloc (numlines*sizeof(line_t),PU_LEVEL,0);      
+    //lines = N_malloc(numlines*sizeof(line_t));
+    lines = Z_Malloc (numlines*sizeof(line_t),PU_LEVEL,0);      
     memset (lines, 0, numlines*sizeof(line_t));
     data = W_CacheLumpNum (lump,PU_STATIC);
         
@@ -838,8 +838,8 @@ void P_LoadSideDefs (int lump)
     side_t*             sd;
         
     numsides = W_LumpLength (lump) / sizeof(mapsidedef_t);
-    sides = N_malloc(numsides*sizeof(side_t));
-    //sides = Z_Malloc (numsides*sizeof(side_t),PU_LEVEL,0);      
+    //sides = N_malloc(numsides*sizeof(side_t));
+    sides = Z_Malloc (numsides*sizeof(side_t),PU_LEVEL,0);      
     memset (sides, 0, numsides*sizeof(side_t));
     data = W_CacheLumpNum (lump,PU_STATIC);
     
@@ -989,8 +989,8 @@ void P_GroupLines (void)
     }
 
     // build line tables for each sector 
-    linebuffer = N_malloc(totallines*sizeof(line_t *));       
-    //linebuffer = Z_Malloc (totallines*sizeof(line_t *), PU_LEVEL, 0);
+    //linebuffer = N_malloc(totallines*sizeof(line_t *));       
+    linebuffer = Z_Malloc (totallines*sizeof(line_t *), PU_LEVEL, 0);
 
     for (i=0; i<numsectors; ++i)
     {
@@ -1207,7 +1207,8 @@ P_SetupLevel
     // Make sure all sounds are stopped before Z_FreeTags.
     //S_Start ();                 
 
-    //Z_FreeTags (PU_LEVEL, PU_PURGELEVEL-1); //X-HEEP comment need to uncoment or replace if mallocs left 
+    Z_FreeTags (PU_LEVEL, PU_PURGELEVEL-1); //X-HEEP comment need to uncoment or replace if mallocs left 
+    //P_FreeLevelData(); not used any more 
 
     // UNUSED W_Profile ();
     P_InitThinkers ();
@@ -1237,21 +1238,18 @@ P_SetupLevel
         
     leveltime = 0;
 
-    PRINTF("In P_SetupLevel before loads\n");
     // note: most of this ordering is important 
     P_LoadBlockMap (lumpnum+ML_BLOCKMAP);    //X-HEEP comment : No more Z_malloc
     P_LoadVertexes (lumpnum+ML_VERTEXES);    //X-HEEP comment : No more Z_malloc : in flash
-    P_LoadSectors (lumpnum+ML_SECTORS);      //X-HEEP comment : Uses N_malloc: sectors in heap    
-    P_LoadSideDefs (lumpnum+ML_SIDEDEFS);    //X-HEEP comment : Uses N_malloc: sides in heap
-    P_LoadLineDefs (lumpnum+ML_LINEDEFS);    //X-HEEP comment : Uses N_malloc: lines in heap
-    P_LoadSubsectors (lumpnum+ML_SSECTORS);  //X-HEEP comment : Uses N_malloc: subsectors in heap
+    P_LoadSectors (lumpnum+ML_SECTORS);      //X-HEEP comment : Uses Z_malloc: sectors in heap    
+    P_LoadSideDefs (lumpnum+ML_SIDEDEFS);    //X-HEEP comment : Uses Z_malloc: sides in heap
+    P_LoadLineDefs (lumpnum+ML_LINEDEFS);    //X-HEEP comment : Uses Z_malloc: lines in heap
+    P_LoadSubsectors (lumpnum+ML_SSECTORS);  //X-HEEP comment : Uses Z_malloc: subsectors in heap
     P_LoadNodes (lumpnum+ML_NODES);          //X-HEEP comment : No more Z_malloc : in flash
     P_LoadSegs (lumpnum+ML_SEGS);            //X-HEEP comment : No more Z_malloc : in flash
-    P_GroupLines ();                         //X-HEEP comment : Uses N_malloc: linebuffer in heap
+    P_GroupLines ();                         //X-HEEP comment : Uses Z_malloc: linebuffer in heap
     P_LoadReject (lumpnum+ML_REJECT);        //X-HEEP comment : No more Z_malloc : in flash
 
-
-    PRINTF("In P_SetupLevel before loadthings\n");
     bodyqueslot = 0;
     deathmatch_p = deathmatchstarts;
     P_LoadThings (lumpnum+ML_THINGS);
@@ -1271,7 +1269,6 @@ P_SetupLevel
     // clear special respawning que
     iquehead = iquetail = 0;            
     
-    PRINTF("In P_SetupLevel before SpawnSpecials\n");
     // set up world state
     P_SpawnSpecials ();
         
@@ -1280,7 +1277,7 @@ P_SetupLevel
 
     // preload graphics
     if (precache)
-        R_PrecacheLevel ();
+        R_PrecacheLevel (); //X-HEEP TODO : cache as many flats and textures 
 
     //PRINTF ("free memory: 0x%x\n", Z_FreeMemory());
 

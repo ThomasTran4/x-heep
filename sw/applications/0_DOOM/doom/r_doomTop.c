@@ -954,9 +954,10 @@ void R_InitLightTables (void)
 
             if (level >= NUMCOLORMAPS)
                 level = NUMCOLORMAPS-1;
-
-            lighttable_t tempcolormaps; 
-            X_spi_read(colormaps, &tempcolormaps, sizeof(tempcolormaps)); 
+ 
+            uint32_t temp_data; 
+            X_spi_read(colormaps, &temp_data, 1);
+            lighttable_t tempcolormaps = (temp_data & 0xFF); 
             zlight[i][j] = tempcolormaps + level*256;
         }
     }

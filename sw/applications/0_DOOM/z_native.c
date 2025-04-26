@@ -27,7 +27,7 @@
 #include "i_system.h"
 #include "doomtype.h"
 
-//#include "n_mem.h"
+#include "n_mem.h"
 
 #define ZONEID	0x1d4a11
 
@@ -159,7 +159,7 @@ void Z_Free (void* ptr)
 
     // Free back to system
 
-    free(block);
+    N_free(block, sizeof(memblock_t) + block->size);
 }
 
 // Empty data from the cache list to allocate enough data of the size
@@ -220,7 +220,7 @@ static boolean ClearCache(int size)
             *block->user = NULL;
         }
 
-        free(block);
+        N_free(block, sizeof(memblock_t) + block->size);
 
         block = next_block;
     }
@@ -316,7 +316,7 @@ void Z_FreeTags(int lowtag, int hightag)
                 *block->user = NULL;
             }
             
-            free(block);
+            N_free(block, sizeof(memblock_t) + block->size); 
 
             // Jump to the next in the chain
 

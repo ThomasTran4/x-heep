@@ -766,7 +766,7 @@ void R_InitTextures (void)
     if (W_CheckNumForName (DEH_String("TEXTURE2")) != -1)
     {
         maptex2 = W_CacheLumpName (DEH_String("TEXTURE2"), PU_STATIC);
-        X_spi_read(maptex2, &numtextures2, sizeof(numtextures2)); 
+        X_spi_read(maptex2, &numtextures2, sizeof(numtextures2)/4); 
         numtextures2 = LONG(numtextures2);
         maxoff2 = W_LumpLength (W_GetNumForName (DEH_String("TEXTURE2")));
     }
@@ -1036,7 +1036,7 @@ fixed_t R_SpriteWidth(int num)
     patch_t     *patch;
     patch = W_CacheLumpNum (firstspritelump+num, PU_CACHE);
     patch_t temp_patch; 
-    X_spi_read(patch, &temp_patch, sizeof(temp_patch)); 
+    X_spi_read(patch, &temp_patch, sizeof(temp_patch)/4); 
     return SHORT(temp_patch.width)<<FRACBITS;
 }
 fixed_t R_SpriteOffset(int num)
@@ -1044,7 +1044,7 @@ fixed_t R_SpriteOffset(int num)
     patch_t     *patch;
     patch = W_CacheLumpNum (firstspritelump+num, PU_CACHE);
     patch_t temp_patch; 
-    X_spi_read(patch, &temp_patch, sizeof(temp_patch));
+    X_spi_read(patch, &temp_patch, sizeof(temp_patch)/4);
     return SHORT(temp_patch.leftoffset)<<FRACBITS;
 }
 fixed_t R_SpriteTopOffset(int num)
@@ -1052,7 +1052,7 @@ fixed_t R_SpriteTopOffset(int num)
     patch_t     *patch;
     patch = W_CacheLumpNum (firstspritelump+num, PU_CACHE);
     patch_t temp_patch; 
-    X_spi_read(patch, &temp_patch, sizeof(temp_patch));
+    X_spi_read(patch, &temp_patch, sizeof(temp_patch)/4);
     return SHORT(temp_patch.topoffset)<<FRACBITS;
 }
 
