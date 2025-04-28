@@ -62,6 +62,7 @@ P_SetMobjState
     const state_t*    st;
     int cycle_counter = 0;
 
+    
     do
     {
         if (state == S_NULL)
@@ -79,17 +80,21 @@ P_SetMobjState
 
         // Modified handling.
         // Call action functions when the state is set
-        if (st->action.acp1)            
-            st->action.acp1(mobj);      
         
+         
+        if (st->action.acp1)            
+        {    
+            st->action.acp1(mobj);
+        }
+              
+
         state = st->nextstate;
 
         if (cycle_counter++ > MOBJ_CYCLE_LIMIT)
         {
             I_Error("P_SetMobjState: Infinite state cycle detected!");
         }
-    } while (!mobj->tics);
-                                
+    } while (!mobj->tics);                            
     return true;
 }
 
@@ -461,13 +466,11 @@ P_NightmareRespawn (mobj_t* mobj)
 //
 void P_MobjThinker (mobj_t* mobj)
 {
-    printf("P_MobjThinker\n");
     // momentum movement
     if (mobj->momx
         || mobj->momy
         || (mobj->flags&MF_SKULLFLY) )
-    {
-        printf("P_MobjThinker before P_XYMovement\n"); 
+    { 
         P_XYMovement (mobj);
 
         // FIXME: decent NOP/NULL/Nil function pointer please.
@@ -477,7 +480,6 @@ void P_MobjThinker (mobj_t* mobj)
     if ( (mobj->z != mobj->floorz)
          || mobj->momz )
     {
-        printf("P_MobjThinker before P_ZMovement\n");
         P_ZMovement (mobj);
         
         // FIXME: decent NOP/NULL/Nil function pointer please.
@@ -488,21 +490,19 @@ void P_MobjThinker (mobj_t* mobj)
     
     // cycle through states,
     // calling action functions at transitions
-    printf("P_MobjThinker before if else\n");
     if (mobj->tics != -1)
     {
-        printf("P_MobjThinker in if\n");
         mobj->tics--;
-        printf("P_MobjThinker in if after mobj->tics--\n");
+        //printf("P_MobjThinker in if after mobj->tics--\n");
         // you can cycle through multiple states in a tic
+        
         if (!mobj->tics)    
-            printf("P_MobjThinker before P_SetMobjState\n");
             if (!P_SetMobjState (mobj, mobj->state->nextstate) )
-                return;         // freed itself
+                return;         // freed itself  */ 
     }
     else
     {
-        printf("P_MobjThinker in else\n");
+        //printf("P_MobjThinker in else\n");
         // check for nightmare respawn
         if (! (mobj->flags & MF_COUNTKILL) )
             return;
@@ -523,8 +523,6 @@ void P_MobjThinker (mobj_t* mobj)
 
         //P_NightmareRespawn (mobj); //useless 
     }
-
-    printf("P_MobjThinker at the end\n");
 }
 
 void P_InitMobjs (int num)
@@ -584,7 +582,7 @@ P_SpawnMobj
     const state_t*    st;
     const mobjinfo_t* info;
  
-    PRINTF("P_SpawnMobj\n");
+    //PRINTF("P_SpawnMobj\n");
 
     mobj = P_AllocMobj();
     info = &mobjinfo[type];

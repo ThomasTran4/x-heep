@@ -105,7 +105,7 @@ mobj_t*         blocklinks[BLOCKLINKS_SIZE];
 // Without special effect, this could be
 //  used as a PVS lookup as well.
 //
-byte*           rejectmatrix;
+byte*           rejectmatrix; // X-HEEP comment : rejectmatrix is an adress in flash it must be read using X_spi_read 
 
 
 // Maintain single and multi player starting spots.

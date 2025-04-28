@@ -495,6 +495,8 @@ P_LookForPlayers
 ( mobj_t*       actor,
   boolean       allaround )
 {
+
+
     int         c;
     int         stop;
     player_t*   player;
@@ -522,8 +524,7 @@ P_LookForPlayers
             continue;           // dead
 
         if (!P_CheckSight (actor, player->mo))
-            continue;           // out of sight
-                        
+            continue;           // out of sight               
         if (!allaround)
         {
             an = R_PointToAngle2 (actor->x,
@@ -542,10 +543,9 @@ P_LookForPlayers
             }
         }
                 
-        actor->target = player->mo;
+        actor->target = player->mo; 
         return true;
     }
-
     return false;
 }
 
@@ -596,7 +596,9 @@ void A_KeenDie (mobj_t* mo)
 void A_Look (mobj_t* actor)
 {
     mobj_t*     targ;
-        
+    
+    
+
     actor->threshold = 0;       // any shot will wake up
     targ = actor->subsector->sector->soundtarget;
 
@@ -606,7 +608,7 @@ void A_Look (mobj_t* actor)
         actor->target = targ;
 
         if ( actor->flags & MF_AMBUSH )
-        {
+        { 
             if (P_CheckSight (actor, actor->target))
                 goto seeyou;
         }
@@ -614,10 +616,10 @@ void A_Look (mobj_t* actor)
             goto seeyou;
     }
         
-        
+       
     if (!P_LookForPlayers (actor, false) )
-        return;
-                
+        return;  
+
     // go into chase state
   seeyou:
 /* X-HEEP COMMENT
@@ -653,6 +655,7 @@ void A_Look (mobj_t* actor)
     }
 X-HEEP COMMENT END */
     P_SetMobjState (actor, actor->info->seestate);
+    
 }
 
 

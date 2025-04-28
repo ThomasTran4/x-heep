@@ -308,7 +308,7 @@ boolean
 P_CheckSight
 ( mobj_t*       t1,
   mobj_t*       t2 )
-{
+{ 
     int         s1;
     int         s2;
     int         pnum;
@@ -325,8 +325,8 @@ P_CheckSight
     bitnum = 1 << (pnum&7);
 
     // Check in REJECT table.
-    uint32_t temp_reject_data; 
-    X_spi_read(rejectmatrix[bytenum], &temp_reject_data, 1); 
+    uint32_t temp_reject_data;  
+    X_spi_read(rejectmatrix + bytenum, &temp_reject_data, 1); 
 
     if ((temp_reject_data & 0xFF)&bitnum)
     {
