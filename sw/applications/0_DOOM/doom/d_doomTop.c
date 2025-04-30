@@ -220,16 +220,18 @@ void D_Display (void)
     if (gamestate != wipegamestate)
     {
         wipe = true;
-        wipe_StartScreen(0, 0, SCREENWIDTH, SCREENHEIGHT); //TODO in here 
+        wipe_StartScreen(0, 0, SCREENWIDTH, SCREENHEIGHT); //X-HEEP comment : Wipescreen deactivated for now 
     }
     else
         wipe = false;
-
+ 
     I_ClearVideoBuffer();
 
     if (gamestate == GS_LEVEL && gametic)
+    {
         HU_Erase();
-
+    }
+    
     // do buffered drawing
     PRINTF("In D_Display before switch, gamestate : %i\n", gamestate); 
     switch (gamestate)
@@ -238,11 +240,15 @@ void D_Display (void)
         if (!gametic)
             break;
         if (automapactive)
+        {
+            PRINTF("In D_Display in switch, before Am_Drawer\n");
             AM_Drawer ();
+        }
         if (wipe || (viewheight != SCREENHEIGHT && fullscreen))
             redrawsbar = true;
         if (inhelpscreensstate && !inhelpscreens)
             redrawsbar = true;              // just put away the help screen
+        PRINTF("In D_Display in switch, before ST_Drawer\n"); 
         ST_Drawer (viewheight == SCREENHEIGHT, redrawsbar );
         fullscreen = viewheight == SCREENHEIGHT;
         break;
@@ -265,10 +271,18 @@ void D_Display (void)
     
     // draw the view directly
     if (gamestate == GS_LEVEL && !automapactive && gametic)
+    {
+        PRINTF("In D_Display before R_RenderPlayerView\n");
         R_RenderPlayerView (&players[displayplayer]);
+    }    
+    
 
     if (gamestate == GS_LEVEL && gametic)
+    {
+        PRINTF("In D_Display before HU_Drawer\n");
         HU_Drawer ();
+    }
+        
     
     // clean up border stuff
     if (gamestate != oldgamestate && gamestate != GS_LEVEL) {

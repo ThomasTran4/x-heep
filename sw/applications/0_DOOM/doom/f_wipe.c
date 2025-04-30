@@ -27,7 +27,7 @@
 
 #include "f_wipe.h"
 
-#define INCLUDE_WIPE
+//#define INCLUDE_WIPE //X-HEEP comment deactivated for now
 
 //
 //                       SCREEN WIPE PACKAGE

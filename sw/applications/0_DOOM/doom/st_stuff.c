@@ -418,17 +418,25 @@ void ST_Stop(void);
 void ST_refreshBackground(void)
 {
     if (st_statusbaron)
-    {
-        V_UseBuffer(st_backing_screen);
+    { 
+        //V_UseBuffer(st_backing_screen); //Not used any more as st_backing_screen takes a lot of space with Z_malloc
+        Set_STBuffer(); 
 
+        printf("In ST_refreshBackground before V_DrawPatch\n");
         V_DrawPatch(ST_X, 0, sbar);
 
         if (netgame)
+        {
+            printf("In ST_refreshBackground before second V_DrawPatch\n");
             V_DrawPatch(ST_FX, 0, faceback);
+        }
 
+        printf("In ST_refreshBackground before V_RestoreBuffer\n");
         V_RestoreBuffer();
 
-        V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
+        printf("In ST_refreshBackground before V_CopyRect\n");
+        //V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
+        X_Display_Draw_Screen_200x200(); //debug 
     }
 
 }
@@ -1066,9 +1074,11 @@ void ST_doRefresh(void)
     st_firsttime = false;
 
     // draw status bar background to off-screen buff
+    printf("In ST_doRefresh before ST_refreshBackground\n");
     ST_refreshBackground();
 
     // and refresh all widgets
+    printf("In ST_doRefresh before ST_drawWidgets\n");
     ST_drawWidgets(true);
 
 }
@@ -1091,9 +1101,18 @@ void ST_Drawer (boolean fullscreen, boolean refresh)
     st_firsttime = true; // NRFD-TODO: remove
     
     // If just after ST_Start(), refresh all
-    if (st_firsttime) ST_doRefresh();
+    
+    if (st_firsttime) 
+    {
+        printf("In ST_Drawer before ST_doRefresh\n");
+        ST_doRefresh();
+    }
     // Otherwise, update as little as possible
-    else ST_diffDraw();
+    else 
+    {
+        printf("In ST_Drawer before ST_doPaletteStuff\n");
+        ST_diffDraw();
+    }
 
 }
 

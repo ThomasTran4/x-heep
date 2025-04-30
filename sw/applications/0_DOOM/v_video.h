@@ -81,6 +81,8 @@ void V_DrawRawScreen(byte *raw);
 
 void V_UseBuffer(pixel_t *buffer);
 
+void Set_STBuffer(); 
+
 // Return to using the normal screen buffer to draw graphics.
 
 void V_RestoreBuffer(void);

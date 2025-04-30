@@ -149,7 +149,9 @@ void HUlib_eraseTextLine(hu_textline_t* l)
     if (!automapactive &&
 	viewwindowx && l->needsupdate)
     {
-	lh = SHORT(l->f[0]->height) + 1;
+    patch_t temppatch; 
+    X_spi_read(l->f[0], &temppatch, sizeof(temppatch)/4); 
+	lh = SHORT(temppatch.height) + 1;
 	for (y=l->y,yoffset=y*SCREENWIDTH ; y<l->y+lh ; y++,yoffset+=SCREENWIDTH)
 	{
 	    if (y < viewwindowy || y >= viewwindowy + viewheight)

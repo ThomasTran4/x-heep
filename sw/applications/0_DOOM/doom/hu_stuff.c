@@ -465,7 +465,7 @@ void HU_Drawer(void)
 }
 
 void HU_Erase(void)
-{
+{ 
     HUlib_eraseSText(&w_message);
     HUlib_eraseSText(&w_fps);
     // HUlib_eraseIText(&w_chat); // NRFD-TODO: Chat

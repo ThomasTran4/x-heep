@@ -672,6 +672,12 @@ void V_UseBuffer(pixel_t *buffer)
     dest_screen = buffer;
 }
 
+void Set_STBuffer()
+{
+    const unsigned int st_offset = ((SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH);
+    dest_screen = I_VideoBuffer + st_offset;
+}
+
 // Restore screen buffer to the i_video screen buffer.
 
 void V_RestoreBuffer(void)
