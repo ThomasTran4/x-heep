@@ -246,13 +246,13 @@ void R_InitSpriteDefs ()
         
     if (!numsprites)
         return;
-    PRINTF("R_InitSpriteDefs");
+    PRINTF("R_InitSpriteDefs\n");
     PRINTF("  numsprites = %d\n", numsprites);
 
     if (numsprites > MAX_SPRITES) {
         I_Error("R_InitSpriteDefs: %d > MAX_SPRITES", numsprites);
     }
-    // sprites = Z_Malloc(numsprites *sizeof(*sprites), PU_STATIC, NULL);
+    //sprites = Z_Malloc(numsprites *sizeof(*sprites), PU_STATIC, NULL);
         
     start = firstspritelump-1;
     end = lastspritelump+1;
@@ -277,7 +277,12 @@ void R_InitSpriteDefs ()
         //  filling in the frames for whatever is found
         for (l=start+1 ; l<end ; l++)
         {
-            char *lumpName = W_LumpName(l);
+            filelump_t lump_to_get;
+            W_GetLumpInfo(l, &lump_to_get, 0);
+            char *lumpName = lump_to_get.name;
+            //printf ("lumpName : %s\n", lumpName); 
+            //printf ("spritename : %s\n", spritename);
+            //printf("!strncasecmp(lumpName, spritename, 4) : %i\n", !strncasecmp(lumpName, spritename, 4)); 
             if (!strncasecmp(lumpName, spritename, 4))
             {
                 frame = lumpName[4] - 'A';
@@ -288,14 +293,14 @@ void R_InitSpriteDefs ()
                 else
                     patched = l;
 
-                // PRINTF("  Frame %d rot %d: %.8s - %d\n", frame, rotation, lumpName, patched);
+                //PRINTF("  Frame %d rot %d: %.8s - %d\n", frame, rotation, lumpName, patched);
                 R_InstallSpriteLump (patched, frame, rotation, false);
 
                 if (lumpName[6])
                 {
                     frame = lumpName[6] - 'A';
                     rotation = lumpName[7] - '0';
-                    // PRINTF("  Frame %d rot %d: %.8s - %d\n", frame, rotation, lumpName, l);
+                    //PRINTF("  Frame %d rot %d: %.8s - %d\n", frame, rotation, lumpName, l);
                     R_InstallSpriteLump (l, frame, rotation, true);
                 }
             }
@@ -611,6 +616,9 @@ void R_ProjectSprite (mobj_t* thing)
     sprdef = &sprites[thing->sprite];
 
     int frame = thing->state->frame;
+
+    printf("(frame&FF_FRAMEMASK): %i\n", (frame&FF_FRAMEMASK));
+    printf("sprdef->numframes: %i\n", sprdef->numframes); 
 
 #ifdef RANGECHECK
     if ( (frame&FF_FRAMEMASK) >= sprdef->numframes )

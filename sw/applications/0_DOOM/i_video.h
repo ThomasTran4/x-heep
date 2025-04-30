@@ -28,7 +28,7 @@
 //#define SCREENHEIGHT 200
 #define SCREENWIDTH  160
 #define SCREENHEIGHT 100
-#define ST_HEIGHT 25 
+#define ST_HEIGHT 16 // 32/2 
 
 // Screen height used when aspect_ratio_correct=true.
 

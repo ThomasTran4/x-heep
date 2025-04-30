@@ -51,14 +51,6 @@ typedef PACKED_STRUCT (
 }) wadinfo_t;
 
 
-typedef PACKED_STRUCT (
-{
-    int                 filepos;
-    int                 size;
-    char                name[8];
-}) filelump_t;
-
-
 //#include "n_fs.h"
 //#include "n_qspi.h"
 //#include "n_mem.h"
@@ -522,6 +514,7 @@ lumpindex_t W_GetNumForName(const char* name)
     return i;
 }
 
+//X-HEEP comment : does not work (this is not used)
 char *W_LumpName(lumpindex_t lump)
 {
     filelump_t lump_to_get;

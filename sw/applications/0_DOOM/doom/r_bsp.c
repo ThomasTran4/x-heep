@@ -212,11 +212,13 @@ R_ClipPassWallSegment
         if (last < start->first-1)
         {
             // Post is entirely visible (above start).
+            printf("In R_ClipPassWallSegment before R_StoreWallRange 1\n");
             R_StoreWallRange (first, last);
             return;
         }
                 
         // There is a fragment above *start.
+        printf("In R_ClipPassWallSegment before R_StoreWallRange 2\n");
         R_StoreWallRange (first, start->first - 1);
     }
 
@@ -227,6 +229,7 @@ R_ClipPassWallSegment
     while (last >= (start+1)->first-1)
     {
         // There is a fragment between two posts.
+        printf("In R_ClipPassWallSegment before R_StoreWallRange 3\n");
         R_StoreWallRange (start->last + 1, (start+1)->first - 1);
         start++;
         
@@ -235,6 +238,7 @@ R_ClipPassWallSegment
     }
         
     // There is a fragment after *next.
+    printf("In R_ClipPassWallSegment before R_StoreWallRange 4\n");
     R_StoreWallRange (start->last + 1, last);
 }
 
@@ -269,8 +273,11 @@ void R_AddLine (seg_t*  line)
     curline = line;
 
     // OPTIMIZE: quickly reject orthogonal back sides.
+    //printf("In R_AddLine before SegV1\n"); 
     vertex_t v1 = SegV1(line);
+    //printf("In R_AddLine before SegV2\n"); 
     vertex_t v2 = SegV2(line);
+    //printf("In R_AddLine before R_PointToAngle\n"); 
     angle1 = R_PointToAngle (v1.x, v1.y);
     angle2 = R_PointToAngle (v2.x, v2.y);
     
@@ -313,13 +320,15 @@ void R_AddLine (seg_t*  line)
     // but not necessarily visible.
     angle1 = (angle1+ANG90)>>ANGLETOFINESHIFT;
     angle2 = (angle2+ANG90)>>ANGLETOFINESHIFT;
+    //printf("In R_AddLine before read_viewangletox\n");
     x1 = read_viewangletox(angle1);
     x2 = read_viewangletox(angle2);
 
     // Does not cross a pixel?
     if (x1 == x2)
         return;                         
-        
+    
+    //printf("In R_AddLine before SegBackSector\n");
     backsector = SegBackSector(line);
 
     // Single sided line?
@@ -341,6 +350,7 @@ void R_AddLine (seg_t*  line)
     // Identical floor and ceiling on both sides,
     // identical light levels on both sides,
     // and no middle texture.
+    //printf("In R_AddLine before SegSideDef\n");
     if (backsector->ceilingpic == frontsector->ceilingpic
         && backsector->floorpic == frontsector->floorpic
         && backsector->lightlevel == frontsector->lightlevel
@@ -351,10 +361,12 @@ void R_AddLine (seg_t*  line)
     
                                 
   clippass:
+    printf("In R_AddLine before R_ClipPassWallSegment\n");
     R_ClipPassWallSegment (x1, x2-1);   
     return;
                 
   clipsolid:
+    printf("In R_AddLine before R_ClipSolidWallSegment\n");
     R_ClipSolidWallSegment (x1, x2-1);
 }
 
@@ -514,10 +526,12 @@ void R_Subsector (int num)
     sub = &subsectors[num];
     frontsector = sub->sector;
     count = sub->numlines;
+    //printf("In R_Subsector before GetSeg\n"); 
     line = GetSeg(sub->firstline); //&segs[sub->firstline];
 
     if (frontsector->floorheight < viewz)
     {
+        //printf("In R_Subsector before R_FindPlane\n");
         floorplane = R_FindPlane (frontsector->floorheight,
                                   frontsector->floorpic,
                                   frontsector->lightlevel);
@@ -528,17 +542,20 @@ void R_Subsector (int num)
     if (frontsector->ceilingheight > viewz 
         || frontsector->ceilingpic == skyflatnum)
     {
+        //printf("In R_Subsector before R_FindPlane\n");
         ceilingplane = R_FindPlane (frontsector->ceilingheight,
                                     frontsector->ceilingpic,
                                     frontsector->lightlevel);
     }
     else
         ceilingplane = NULL;
-                
+     
+    printf("In R_Subsector before R_AddSprites\n");
     R_AddSprites (frontsector); 
 
     while (count--)
     {
+        //printf("In R_Subsector before R_AddLine\n");
         R_AddLine (line);
         line++;
     }
@@ -560,13 +577,21 @@ void R_RenderBSPNode (int bspnum)
 {
     int         side;
 
+    printf("In R_RenderBSPNode\n"); 
     // Found a subsector?
     if (bspnum & NF_SUBSECTOR)
     {
-        if (bspnum == -1)                       
+        if (bspnum == -1) 
+        {
+            printf("In R_RenderBSPNode before R_Subsector\n");
             R_Subsector (0);
+        }                     
         else
+        {
+            printf("In R_RenderBSPNode before R_Subsector\n");
             R_Subsector (bspnum&(~NF_SUBSECTOR));
+        }
+            
         return;
     }
     
@@ -574,10 +599,12 @@ void R_RenderBSPNode (int bspnum)
     int bspnum_front;
     int bspnum_back;
     {
-        // NRFD-TODO: Optimize stack?  
+        // NRFD-TODO: Optimize stack?
+        //printf("In R_RenderBSPNode before GetNode\n");   
         node_t bsp = GetNode(bspnum); //&nodes[bspnum];
         
         // Decide which side the view point is on.
+        //printf("In R_RenderBSPNode before R_PointOnSide\n");
         side = R_PointOnSide (viewx, viewy, &bsp);
 
         bspnum_front = bsp.children[side];
@@ -589,9 +616,11 @@ void R_RenderBSPNode (int bspnum)
     R_RenderBSPNode (bspnum_front); 
 
     // Possibly divide back space.
+    //printf("In R_RenderBSPNode before R_CheckBBox\n");
     if (R_CheckBBox (bbox)) {
         R_RenderBSPNode (bspnum_back);
     }
+    printf("In R_RenderBSPNode end\n");
 }
 
 

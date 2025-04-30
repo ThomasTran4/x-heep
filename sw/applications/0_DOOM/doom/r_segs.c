@@ -99,6 +99,8 @@ R_RenderMaskedSegRange
   int           x1,
   int           x2 )
 {
+    printf("R_RenderMaskedSegRange\n"); 
+    
     unsigned    index;
     column_t*   col;
     int         lightnum;
@@ -238,7 +240,7 @@ R_RenderMaskedSegRange
 
 void R_RenderSegLoop (void)
 {
-    // PRINTF("R_RenderSegLoop\n");
+    PRINTF("R_RenderSegLoop\n");
     angle_t             angle;
     unsigned            index;
     int                 yl;
@@ -323,6 +325,7 @@ void R_RenderSegLoop (void)
             dc_yl = yl;
             dc_yh = yh;
             dc_texturemid = rw_midtexturemid;
+            printf("In R_RenderSegLoop before R_GetCachedColumn 1 \n");
             dc_source = R_GetCachedColumn(midtexture,texturecolumn);
             colfunc ();
             ceilingclip[rw_x] = viewheight;
@@ -345,7 +348,8 @@ void R_RenderSegLoop (void)
                     dc_yl = yl;
                     dc_yh = mid;
                     dc_texturemid = rw_toptexturemid;
-                    dc_source = R_GetCachedColumn(toptexture,texturecolumn);
+                    printf("In R_RenderSegLoop before R_GetCachedColumn 2 \n");
+                    dc_source = R_GetCachedColumn(toptexture,texturecolumn); 
                     colfunc ();
                     ceilingclip[rw_x] = mid;
                 }
@@ -374,6 +378,7 @@ void R_RenderSegLoop (void)
                     dc_yl = mid;
                     dc_yh = yh;
                     dc_texturemid = rw_bottomtexturemid;
+                    printf("In R_RenderSegLoop before R_GetCachedColumn 3 \n"); 
                     dc_source = R_GetCachedColumn(bottomtexture,
                                             texturecolumn);
                     colfunc ();

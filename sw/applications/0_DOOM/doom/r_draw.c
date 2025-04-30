@@ -157,7 +157,8 @@ void R_DrawTransColumn (void)
         //  using a lighting/special effects LUT.
         pixel_t val = tempval;
         if (val != 251) { // Use pink as transparent color
-            *dest = dc_colormap[val];
+            X_spi_read(dc_colormap + val, &temp_val_data, 1); 
+            *dest = (uint8_t)temp_val_data;
         }
         
         dest += SCREENWIDTH; 
@@ -219,7 +220,8 @@ void R_DrawColumn (void)
     {
         // Re-map color indices from wall texture column
         //  using a lighting/special effects LUT.
-        *dest = dc_colormap[temp_val_data];
+        X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
+        *dest = (uint8_t)temp_val_data;
         
         dest += SCREENWIDTH; 
         frac += fracstep;
@@ -331,7 +333,8 @@ void R_DrawColumnLow (void)
     do 
     {
         // Hack. Does not work corretly.
-        *dest2 = *dest = dc_colormap[temp_val_data];
+        X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
+        *dest2 = *dest = (uint8_t)temp_val_data;
         dest += SCREENWIDTH;
         dest2 += SCREENWIDTH;
         frac += fracstep; 
@@ -410,13 +413,15 @@ void R_DrawFuzzColumn (void)
     // Looks like an attempt at dithering,
     //  using the colormap #6 (of 0-31, a bit
     //  brighter than average).
+    uint32_t temp_val_data;
     do 
     {
         // Lookup framebuffer, and retrieve
         //  a pixel that is either one column
         //  left or right of the current one.
         // Add index from colormap to index.
-        *dest = colormaps[6*256+dest[fuzzoffset[fuzzpos]]]; 
+        X_spi_read(dc_colormap + (6*256+dest[fuzzoffset[fuzzpos]]), &temp_val_data, 1); 
+        *dest = (uint8_t)temp_val_data; 
 
         // Clamp table lookup index.
         if (++fuzzpos == FUZZTABLE) 
@@ -476,14 +481,17 @@ void R_DrawFuzzColumnLow (void)
     // Looks like an attempt at dithering,
     //  using the colormap #6 (of 0-31, a bit
     //  brighter than average).
+    uint32_t temp_val_data;
     do 
     {
         // Lookup framebuffer, and retrieve
         //  a pixel that is either one column
         //  left or right of the current one.
         // Add index from colormap to index.
-        *dest = colormaps[6*256+dest[fuzzoffset[fuzzpos]]]; 
-        *dest2 = colormaps[6*256+dest2[fuzzoffset[fuzzpos]]]; 
+        X_spi_read(dc_colormap + (6*256+dest[fuzzoffset[fuzzpos]]), &temp_val_data, 1); 
+        *dest = (uint8_t)temp_val_data; 
+        X_spi_read(dc_colormap + (6*256+dest2[fuzzoffset[fuzzpos]]), &temp_val_data, 1); 
+        *dest2 = (uint8_t)temp_val_data; 
 
         // Clamp table lookup index.
         if (++fuzzpos == FUZZTABLE) 
@@ -603,8 +611,9 @@ void R_DrawTranslatedColumn (void)
         //  to map certain colorramps to other ones,
         //  used with PLAY sprites.
         // Thus the "green" ramp of the player 0 sprite
-        //  is mapped to gray, red, black/indigo. 
-        *dest = dc_colormap[dc_translation[temp_val_data]];
+        //  is mapped to gray, red, black/indigo.
+        X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
+        *dest = (uint8_t)temp_val_data;
         dest += SCREENWIDTH;
         
         frac += fracstep; 
@@ -755,7 +764,7 @@ void R_DrawSpan (void)
     int count;
     int spot;
     unsigned int xtemp, ytemp;
-
+/*
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1
         || ds_x1<0
@@ -765,9 +774,10 @@ void R_DrawSpan (void)
         I_Error( "R_DrawSpan: %i to %i at %i",
                  ds_x1,ds_x2,ds_y);
     }
+
 //      dscount++;
 #endif
-
+*/
     // Pack position and step variables into a single 32-bit integer,
     // with x in the top 16 bits and y in the bottom 16 bits.  For
     // each 16-bit part, the top 6 bits are the integer part and the
@@ -783,8 +793,7 @@ void R_DrawSpan (void)
     // We do not check for zero spans here?
     count = ds_x2 - ds_x1;
 
-    uint32_t temp_data;
-    X_spi_read(ds_source[spot], &temp_data, 1); 
+    uint32_t temp_data; 
 
     do
     {
@@ -792,10 +801,12 @@ void R_DrawSpan (void)
         ytemp = (position >> 4) & 0x0fc0;
         xtemp = (position >> 26);
         spot = xtemp | ytemp;
+        X_spi_read(ds_source[spot], &temp_data, 1);
 
         // Lookup pixel from flat texture tile,
         //  re-index using light/colormap.
-        *dest++ = ds_colormap[((temp_data >> 0)  & 0xFF)];
+        X_spi_read(ds_colormap + ((temp_data >> 0)  & 0xFF), &temp_data, 1); 
+        *dest++ = (uint8_t)temp_data;
 
         position += step;
 
@@ -922,11 +933,13 @@ void R_DrawSpanLow (void)
         ytemp = (position >> 4) & 0x0fc0;
         xtemp = (position >> 26);
         spot = xtemp | ytemp;
+        X_spi_read(ds_source[spot], &temp_data, 1); 
 
         // Lowres/blocky mode does it twice,
         //  while scale is adjusted appropriately.
-        *dest++ = ds_colormap[((temp_data >> 0)  & 0xFF)];
-        *dest++ = ds_colormap[((temp_data >> 0)  & 0xFF)];
+        X_spi_read(ds_colormap + ((temp_data >> 0)  & 0xFF), &temp_data, 1); 
+        *dest++ = (uint8_t)temp_data;
+        *dest++ = (uint8_t)temp_data;
 
         position += step;
 

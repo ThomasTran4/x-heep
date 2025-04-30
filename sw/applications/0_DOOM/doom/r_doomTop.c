@@ -956,9 +956,7 @@ void R_InitLightTables (void)
                 level = NUMCOLORMAPS-1;
  
             uint32_t temp_data; 
-            X_spi_read(colormaps, &temp_data, 1);
-            lighttable_t tempcolormaps = (temp_data & 0xFF); 
-            zlight[i][j] = tempcolormaps + level*256;
+            zlight[i][j] = colormaps + level*256;
         }
     }
 }
@@ -1208,7 +1206,7 @@ void R_SetupFrame (player_t* player)
 //
 void R_RenderPlayerView (player_t* player)
 {       
-    // PRINTF("Setup start ... \n");
+    PRINTF("Setup start ... \n");
     R_SetupFrame (player);
 
     // Clear buffers.
@@ -1216,29 +1214,29 @@ void R_RenderPlayerView (player_t* player)
     R_ClearDrawSegs ();
     R_ClearPlanes ();
     R_ClearSprites ();
-    // PRINTF("finish\n");
+    PRINTF("finish\n");
     
     // check for new console commands.
     NetUpdate ();
 
     // The head node is the last node output.
-    // PRINTF("R_RenderBSPNode start ... \n");
+    PRINTF("R_RenderBSPNode start ... \n");
     R_RenderBSPNode (numnodes-1);
-    // PRINTF("finish\n");
+    PRINTF("finish\n");
     
     // Check for new console commands.
     NetUpdate ();
     
-    // PRINTF("R_DrawPlanes start ... \n");
+    PRINTF("R_DrawPlanes start ... \n");
     R_DrawPlanes ();
-    // PRINTF("finish\n");
+    PRINTF("finish\n");
     
     // Check for new console commands.
     NetUpdate ();
     
-    // PRINTF("R_DrawMasked start ...\n");
+    PRINTF("R_DrawMasked start ...\n");
     R_DrawMasked ();
-    // PRINTF("finish\n");
+    PRINTF("finish\n");
 
     // Check for new console commands.
     NetUpdate ();                               

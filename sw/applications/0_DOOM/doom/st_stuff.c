@@ -422,21 +422,16 @@ void ST_refreshBackground(void)
         //V_UseBuffer(st_backing_screen); //Not used any more as st_backing_screen takes a lot of space with Z_malloc
         Set_STBuffer(); 
 
-        printf("In ST_refreshBackground before V_DrawPatch\n");
         V_DrawPatch(ST_X, 0, sbar);
 
         if (netgame)
         {
-            printf("In ST_refreshBackground before second V_DrawPatch\n");
             V_DrawPatch(ST_FX, 0, faceback);
         }
 
-        printf("In ST_refreshBackground before V_RestoreBuffer\n");
         V_RestoreBuffer();
 
-        printf("In ST_refreshBackground before V_CopyRect\n");
-        //V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y);
-        X_Display_Draw_Screen_200x200(); //debug 
+        //V_CopyRect(ST_X, 0, st_backing_screen, ST_WIDTH, ST_HEIGHT, ST_X, ST_Y); //Not used any more as st_backing_screen takes a lot of space with Z_malloc
     }
 
 }
@@ -1064,7 +1059,7 @@ void ST_drawWidgets(boolean refresh)
     for (i=0;i<3;i++)
         STlib_updateMultIcon(&w_keyboxes[i], refresh);
 
-    STlib_updateNum(&w_frags, refresh);
+    STlib_updateNum(&w_frags, refresh); 
 
 }
 
@@ -1080,6 +1075,8 @@ void ST_doRefresh(void)
     // and refresh all widgets
     printf("In ST_doRefresh before ST_drawWidgets\n");
     ST_drawWidgets(true);
+
+    X_Display_Draw_Screen_200x200(); //debug 
 
 }
 

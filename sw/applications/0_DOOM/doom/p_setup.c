@@ -337,13 +337,16 @@ vertex_t SegV2(seg_t *seg) {
 }
 angle_t SegAngle(seg_t *seg) {
     mapseg_t *ms = (mapseg_t*)seg;
-
-    return (SHORT(ms->angle))<<FRACBITS;
+    mapseg_t temp_ms; 
+    X_spi_read(ms, &temp_ms, sizeof(temp_ms)/4);
+    return (SHORT(temp_ms.angle))<<FRACBITS;
 }
 fixed_t SegOffset(seg_t *seg) {
     mapseg_t *ms = (mapseg_t*)seg;
+    mapseg_t temp_ms; 
+    X_spi_read(ms, &temp_ms, sizeof(temp_ms)/4);
 
-    return (SHORT(ms->offset))<<FRACBITS;
+    return (SHORT(temp_ms.offset))<<FRACBITS;
 }
 line_t *SegLineDef(seg_t *seg)
 {

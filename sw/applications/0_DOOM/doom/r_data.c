@@ -956,15 +956,16 @@ void R_InitTextures (void)
     
     // Create translation table for global animation.
 
-    //X-HEEP Comment  
-    //texturetranslation = Z_Malloc ((numtextures+1)*sizeof(*texturetranslation), PU_STATIC, 0);
-    /*
+    
+    Z_Init(); //X-HEEP Comment dont uncomment this ! 
+    texturetranslation = Z_Malloc ((numtextures+1)*sizeof(*texturetranslation), PU_STATIC, 0);
+    
     for (i=0 ; i<numtextures ; i++)
+    { 
         texturetranslation[i] = i;
-    */
-
-
-    GenerateTextureHashTable(); 
+    }
+    
+    //GenerateTextureHashTable(); 
 }
 
 
@@ -986,12 +987,10 @@ void R_InitFlats (void)
     // NRFD-TODO? flattranslation could be bytes if we used offset from firstflat 
     
     //X-HEEP comment 
-    //flattranslation = Z_Malloc ((numflats+1)*sizeof(*flattranslation), PU_STATIC, 0);
-    /*for (i=0 ; i<numflats ; i++)
+    flattranslation = Z_Malloc ((numflats+1)*sizeof(*flattranslation), PU_STATIC, 0);
+    for (i=0 ; i<numflats ; i++)
         flattranslation[i] = i;
-    */
-
-     /*X-HEEP TODO : write flattranslation to flash */
+    
 }
 
 

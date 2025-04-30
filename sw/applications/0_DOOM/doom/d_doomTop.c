@@ -496,7 +496,7 @@ void D_DoomLoop (void)
         G_BeginRecording ();
     */
     PRINTF("D_DoomLoop\n");
-    Z_Init(); //X-HEEP comment : Since nothing is stored in heap using Z_malloc before this is declared here, otherwise decalare it before (seems to make the program crash TODO investigate why)
+    //Z_Init(); //X-HEEP comment : Since nothing is stored in heap using Z_malloc before this is declared here, otherwise decalare it before (seems to make the program crash TODO investigate why)
     
     main_loop_started = true;
 
@@ -854,12 +854,15 @@ void D_IdentifyVersion(void)
 
         for (i=0; i<numlumps; ++i)
         {
-            if (!strncasecmp(W_LumpName(i), "MAP01", 8))
+            filelump_t lump_to_get;
+            W_GetLumpInfo(i, &lump_to_get, 0);
+
+            if (!strncasecmp(lump_to_get.name, "MAP01", 8))
             {
                 gamemission = doom2;
                 break;
             } 
-            else if (!strncasecmp(W_LumpName(i), "E1M1", 8))
+            else if (!strncasecmp(lump_to_get.name, "E1M1", 8))
             {
                 gamemission = doom;
                 break;
@@ -1332,17 +1335,6 @@ void D_DoomMain (void)
 
     //I_AtExit(D_Endoom, false); //Useless 
     
-    /*
-    fixed_t test = read_finetangent(0); 
-    printf("test : %i\n", test); 
-    test = read_finetangent(1); 
-    printf("test : %i\n", test); 
-    test = read_finetangent(2); 
-    printf("test : %i\n", test); 
-    test = read_finetangent(3); 
-    printf("test : %i\n", test); 
-    */
-
     // print banner
 
     I_PrintBanner(DOOM_PACKAGE_STRING);

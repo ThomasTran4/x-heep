@@ -48,6 +48,13 @@ struct __attribute__((packed)) lumpinfo_s
     // lumpindex_t next;
 };
 
+typedef PACKED_STRUCT (
+    {
+        int                 filepos;
+        int                 size;
+        char                name[8];
+    }) filelump_t;
+
 typedef struct lumpinfo_s lumpinfo_t;
 
 extern lumpinfo_t lumpinfo[];

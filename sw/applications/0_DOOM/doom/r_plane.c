@@ -408,6 +408,8 @@ R_MakeSpans
 //
 void R_DrawPlanes (void)
 {
+    printf("R_DrawPlanes\n"); 
+    
     visplane_t*         pl;
     int                 light;
     int                 x;
