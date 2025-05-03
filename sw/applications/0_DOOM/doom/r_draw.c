@@ -759,6 +759,8 @@ int                     dscount;
 // Draws the actual span.
 void R_DrawSpan (void) 
 { 
+
+    printf("R_DrawSpan\n"); 
     unsigned int position, step;
     pixel_t *dest;
     int count;
@@ -788,6 +790,7 @@ void R_DrawSpan (void)
     step = ((ds_xstep << 10) & 0xffff0000)
          | ((ds_ystep >> 6)  & 0x0000ffff);
 
+    printf("R_DrawSpan before dest calc\n");
     dest = ylookup(ds_y) + columnofs(ds_x1);
 
     // We do not check for zero spans here?
@@ -801,7 +804,7 @@ void R_DrawSpan (void)
         ytemp = (position >> 4) & 0x0fc0;
         xtemp = (position >> 26);
         spot = xtemp | ytemp;
-        X_spi_read(ds_source[spot], &temp_data, 1);
+        X_spi_read(ds_source + spot, &temp_data, 1);
 
         // Lookup pixel from flat texture tile,
         //  re-index using light/colormap.
@@ -893,6 +896,7 @@ void R_DrawSpan (void)
 //
 void R_DrawSpanLow (void)
 {
+    printf("R_DrawSpanLow\n"); 
     unsigned int position, step;
     unsigned int xtemp, ytemp;
     pixel_t *dest;

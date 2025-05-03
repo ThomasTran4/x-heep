@@ -1334,6 +1334,9 @@ void D_DoomMain (void)
     int numiwadlumps;
 
     //I_AtExit(D_Endoom, false); //Useless 
+
+    int32_t test = read_finesine(2250); 
+    printf("test : %i\n", test); 
     
     // print banner
 

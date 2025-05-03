@@ -238,6 +238,7 @@ uint32_t X_spi_alloc_sector()
 
 int32_t read_finesine(uint32_t index) {
     int32_t value;
+    //uint32_t *test_buffer_flash = heep_get_flash_address_offset(finesine[index]);
     X_spi_read(&finesine[index], &value, sizeof(value)/4);
     return value;
 }

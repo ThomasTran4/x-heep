@@ -208,8 +208,8 @@ void V_DrawPatch(int x, int y, patch_t *patch)
         while (tempcolumn.topdelta != 0xff)
         {
             source = (byte *)column + 3;
-            dest = desttop + tempcolumn.topdelta*SCREENWIDTH;
-            count = tempcolumn.length;
+            dest = desttop + tempcolumn.topdelta/2*SCREENWIDTH;
+            count = tempcolumn.length/2;
 
             while (count--)
             {
