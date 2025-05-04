@@ -480,6 +480,7 @@ boolean D_GrabMouseCallback(void)
 //
 //  D_DoomLoop
 //
+#define DEBUG_SETUP 1
 void D_DoomLoop (void)
 {
     /* NRFD-EXCLUDE:
@@ -499,6 +500,12 @@ void D_DoomLoop (void)
     //Z_Init(); //X-HEEP comment : Since nothing is stored in heap using Z_malloc before this is declared here, otherwise decalare it before (seems to make the program crash TODO investigate why)
     
     main_loop_started = true;
+
+    #if DEBUG_SETUP
+    // this to launch directly a new game without having to press keys...
+    // useful if you are in a hurry and want to test if new code is faster or slower.
+    short startedGame = false;
+    #endif
 
     //I_SetWindowTitle(gamedescription); //useless 
     //I_GraphicsCheckCommandLine(); //useless
@@ -557,6 +564,14 @@ void D_DoomLoop (void)
         PRINTF("fih = %d | fim = %d | fdh = %d | fdm = %d\n", fih, fim, fdh, fdm);
         PRINTF("xih = %d | xim = %d | xdh = %d | xdm = %d\n", xih, xim, xdh, xdm);
         */
+
+        #if DEBUG_SETUP
+        if (!startedGame)
+        {
+            startedGame = true;
+            G_DeferedInitNew(1, 1, 1);
+        }
+        #endif
 
         //N_ldbg("=== LOOP END ===\n");
         PRINTF("=== LOOP END ===\n");

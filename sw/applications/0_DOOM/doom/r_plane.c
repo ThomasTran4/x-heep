@@ -52,7 +52,7 @@ visplane_t*             ceilingplane;
 
 
 // NRFD-TODO:  Find max for Doom 1 (and/or Doom 2?)
-#define MAXOPENINGS     2*SCREENWIDTH*16 // *64
+#define MAXOPENINGS     SCREENWIDTH*16 // *64
 short                   openings[MAXOPENINGS];
 short*                  lastopening;
 
@@ -61,15 +61,15 @@ short*                  lastopening;
 //  floorclip starts out SCREENHEIGHT
 //  ceilingclip starts out -1
 //
-short                   floorclip[2*SCREENWIDTH];
-short                   ceilingclip[2*SCREENWIDTH];
+short                   floorclip[SCREENWIDTH];
+short                   ceilingclip[SCREENWIDTH];
 
 //
 // spanstart holds the start of a plane span
 // initialized to 0 at start
 // NRFD-NOTE: Was int
-short                   spanstart[2*SCREENHEIGHT];
-short                   spanstop[2*SCREENHEIGHT];
+short                   spanstart[SCREENHEIGHT];
+short                   spanstop[SCREENHEIGHT];
 
 //
 // texture mapping
@@ -78,7 +78,7 @@ lighttable_t**          planezlight;
 fixed_t                 planeheight;
 
 // NRFD-TODO: CHange view size
-const fixed_t                 yslope[2*SCREENHEIGHT] = {
+const fixed_t                 yslope[SCREENHEIGHT] = {
     0x1EA89,0x1F07C,0x1F693,0x1FCD1,0x20338,0x209C8,0x21084,0x2176C,0x21E84,0x225CC,0x22D47,0x234F7,0x23CDD,0x244FE,0x24D5A,0x255F4,0x25ED0,
     0x267F0,0x27157,0x27B09,0x2850A,0x28F5C,0x29A04,0x2A506,0x2B067,0x2BC2B,0x2C859,0x2D4F4,0x2E204,0x2EF8F,0x2FD9B,0x30C30,0x31B56,0x32B16,
     0x33B79,0x34C89,0x35E50,0x370DC,0x38438,0x39873,0x3AD9B,0x3C3C3,0x3DAFC,0x3F35B,0x40CF6,0x427E5,0x44444,0x46231,0x481CD,0x4A33F,0x4C6AF,
@@ -90,7 +90,7 @@ const fixed_t                 yslope[2*SCREENHEIGHT] = {
     0x3AD9B,0x39873,0x38438,0x370DC,0x35E50,0x34C89,0x33B79,0x32B16,0x31B56,0x30C30,0x2FD9B,0x2EF8F,0x2E204,0x2D4F4,0x2C859,
     0x2BC2B,0x2B067,0x2A506,0x29A04,0x28F5C,0x2850A,0x27B09,0x27157,0x267F0,0x25ED0,0x255F4,0x24D5A,0x244FE,0x23CDD,0x234F7,
     0x22D47,0x225CC,0x21E84,0x2176C,0x21084,0x209C8,0x20338,0x1FCD1,0x1F693,0x1F07C,0x1EA89};
-const fixed_t                 distscale[2*SCREENWIDTH] = {
+const fixed_t                 distscale[SCREENWIDTH] = {
     0x16A75,0x16912,0x167FA,0x166E4,0x165D0,0x164BF,0x163B0,0x16262,0x16158,0x16052,0x15F0B,0x15E0B,0x15D0B,0x15BCE,0x15AD6,
     0x1599F,0x158AB,0x1577C,0x1568B,0x15561,0x15475,0x15353,0x15232,0x1514E,0x15034,0x14F1B,0x14E08,0x14D2D,0x14C1D,0x14B13,
     0x14A0A,0x14902,0x14800,0x146FF,0x14601,0x14506,0x1440D,0x14319,0x14226,0x14136,0x14018,0x13F2D,0x13E46,0x13D60,0x13C50,
@@ -155,7 +155,7 @@ R_MapPlane
     fixed_t     length;
     unsigned    index;
         
-    printf("R_MapPlane\n"); 
+    //printf("R_MapPlane\n"); 
 #ifdef RANGECHECK
     if (x2 < x1
      || x1 < 0
@@ -189,9 +189,9 @@ R_MapPlane
     
     length = FixedMul (distance,distscale[x1]);
     angle = (viewangle + xtoviewangle[x1])>>ANGLETOFINESHIFT;
-    printf("R_MapPlane before read_finesine, angle = %i\n", angle); 
+    //printf("R_MapPlane before read_finesine, angle = %i\n", angle); 
     fixed_t sineval = read_finesine(angle); 
-    printf("R_MapPlane before read_finecosine\n");
+    //printf("R_MapPlane before read_finecosine\n");
     fixed_t cosval = read_finecosine(angle); 
     ds_xfrac = viewx + FixedMul(cosval, length);
     ds_yfrac = -viewy - FixedMul(sineval, length);
@@ -213,7 +213,7 @@ R_MapPlane
     ds_x2 = x2;
 
     // high or low detail
-    printf("R_MapPlane before spanfunc\n");
+    //printf("R_MapPlane before spanfunc\n");
     spanfunc ();
 }
 
@@ -383,13 +383,13 @@ R_MakeSpans
 {
     while (t1 < t2 && t1<=b1)
     {
-        printf("In R_MakeSpans before R_MapPlane1\n"); 
+        //printf("In R_MakeSpans before R_MapPlane1\n"); 
         R_MapPlane (t1,spanstart[t1],x-1);
         t1++;
     }
     while (b1 > b2 && b1>=t1)
     {
-        printf("In R_MakeSpans before R_MapPlane2\n"); 
+        //printf("In R_MakeSpans before R_MapPlane2\n"); 
         R_MapPlane (b1,spanstart[b1],x-1);
         b1--;
     }
@@ -459,6 +459,7 @@ void R_DrawPlanes (void)
             dc_colormap = colormaps; 
 
             dc_texturemid = skytexturemid;
+            
             for (x=pl->minx ; x <= pl->maxx ; x++)
             {
                 dc_yl = pl->top[x];
@@ -468,11 +469,12 @@ void R_DrawPlanes (void)
                 {
                     angle = (viewangle + xtoviewangle[x])>>ANGLETOSKYSHIFT;
                     dc_x = x;
-                    printf("In R_DrawPlanes before R_GetCachedColumn\n"); 
+                    //printf("In R_DrawPlanes before R_GetCachedColumn\n"); 
                     dc_source = R_GetCachedColumn(skytexture, angle);
                     colfunc ();
                 }
             }
+        
             continue;
         }
         
@@ -480,7 +482,7 @@ void R_DrawPlanes (void)
         lumpnum = firstflat + flattranslation[pl->picnum];
         ds_source = W_CacheLumpNum(lumpnum, PU_STATIC);
         
-        printf("In R_DrawPlanes before abs\n"); 
+        //printf("In R_DrawPlanes before abs\n"); 
         planeheight = abs(pl->height-viewz);
         light = (pl->lightlevel >> LIGHTSEGSHIFT)+extralight;
 
@@ -497,14 +499,16 @@ void R_DrawPlanes (void)
                 
         stop = pl->maxx + 1;
 
+        
         for (x=pl->minx ; x<= stop ; x++)
         {
-            printf("In R_DrawPlanes before R_MakeSpans\n"); 
+            //printf("In R_DrawPlanes before R_MakeSpans\n"); 
             R_MakeSpans(x,pl->top[x-1],
                         pl->bottom[x-1],
                         pl->top[x],
                         pl->bottom[x]);
         }
+        
         
         //W_ReleaseLumpNum(lumpnum); useless
     }

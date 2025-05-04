@@ -24,12 +24,12 @@
 
 // Screen width and height.
 
-//#define SCREENWIDTH  320
-//#define SCREENHEIGHT 200
-#define SCREENWIDTH  160
-#define SCREENHEIGHT 100
-//#define ST_HEIGHT 32
-#define ST_HEIGHT 16 
+#define SCREENWIDTH  320
+#define SCREENHEIGHT 200
+#define SCREENWIDTH_PHYSICAL  160
+#define SCREENHEIGHT_PHYSICAL 100
+#define ST_HEIGHT 32
+#define ST_HEIGHT_PHYSICAL 16 
 
 // Screen height used when aspect_ratio_correct=true.
 

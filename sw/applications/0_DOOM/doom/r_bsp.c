@@ -212,13 +212,13 @@ R_ClipPassWallSegment
         if (last < start->first-1)
         {
             // Post is entirely visible (above start).
-            printf("In R_ClipPassWallSegment before R_StoreWallRange 1\n");
+            //printf("In R_ClipPassWallSegment before R_StoreWallRange 1\n");
             R_StoreWallRange (first, last);
             return;
         }
                 
         // There is a fragment above *start.
-        printf("In R_ClipPassWallSegment before R_StoreWallRange 2\n");
+        //printf("In R_ClipPassWallSegment before R_StoreWallRange 2\n");
         R_StoreWallRange (first, start->first - 1);
     }
 
@@ -229,7 +229,7 @@ R_ClipPassWallSegment
     while (last >= (start+1)->first-1)
     {
         // There is a fragment between two posts.
-        printf("In R_ClipPassWallSegment before R_StoreWallRange 3\n");
+        //printf("In R_ClipPassWallSegment before R_StoreWallRange 3\n");
         R_StoreWallRange (start->last + 1, (start+1)->first - 1);
         start++;
         
@@ -238,7 +238,7 @@ R_ClipPassWallSegment
     }
         
     // There is a fragment after *next.
-    printf("In R_ClipPassWallSegment before R_StoreWallRange 4\n");
+    //printf("In R_ClipPassWallSegment before R_StoreWallRange 4\n");
     R_StoreWallRange (start->last + 1, last);
 }
 
@@ -361,12 +361,12 @@ void R_AddLine (seg_t*  line)
     
                                 
   clippass:
-    printf("In R_AddLine before R_ClipPassWallSegment\n");
+    //printf("In R_AddLine before R_ClipPassWallSegment\n");
     R_ClipPassWallSegment (x1, x2-1);   
     return;
                 
   clipsolid:
-    printf("In R_AddLine before R_ClipSolidWallSegment\n");
+    //printf("In R_AddLine before R_ClipSolidWallSegment\n");
     R_ClipSolidWallSegment (x1, x2-1);
 }
 
@@ -550,8 +550,9 @@ void R_Subsector (int num)
     else
         ceilingplane = NULL;
      
-    printf("In R_Subsector before R_AddSprites\n");
+    //printf("In R_Subsector before R_AddSprites\n");
     R_AddSprites (frontsector); 
+    //printf("In R_Subsector after R_AddSprites\n");
 
     while (count--)
     {
@@ -563,6 +564,8 @@ void R_Subsector (int num)
     // check for solidsegs overflow - extremely unsatisfactory!
     if(newend > &solidsegs[32])
         I_Error("R_Subsector: solidsegs overflow (vanilla may crash here)\n");
+
+    //printf("In R_Subsector end\n");
 }
 
 
@@ -594,17 +597,17 @@ void R_RenderBSPNode (int bspnum)
             
         return;
     }
-    
+    //printf("In R_RenderBSPNode after if\n");
     fixed_t bbox[4];
     int bspnum_front;
     int bspnum_back;
     {
         // NRFD-TODO: Optimize stack?
-        //printf("In R_RenderBSPNode before GetNode\n");   
+        printf("In R_RenderBSPNode before GetNode\n");   
         node_t bsp = GetNode(bspnum); //&nodes[bspnum];
         
         // Decide which side the view point is on.
-        //printf("In R_RenderBSPNode before R_PointOnSide\n");
+        printf("In R_RenderBSPNode before R_PointOnSide\n");
         side = R_PointOnSide (viewx, viewy, &bsp);
 
         bspnum_front = bsp.children[side];
@@ -616,7 +619,7 @@ void R_RenderBSPNode (int bspnum)
     R_RenderBSPNode (bspnum_front); 
 
     // Possibly divide back space.
-    //printf("In R_RenderBSPNode before R_CheckBBox\n");
+    printf("In R_RenderBSPNode before R_CheckBBox\n");
     if (R_CheckBBox (bbox)) {
         R_RenderBSPNode (bspnum_back);
     }

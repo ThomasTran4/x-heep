@@ -325,7 +325,7 @@ void R_RenderSegLoop (void)
             dc_yl = yl;
             dc_yh = yh;
             dc_texturemid = rw_midtexturemid;
-            printf("In R_RenderSegLoop before R_GetCachedColumn 1 \n");
+            //printf("In R_RenderSegLoop before R_GetCachedColumn 1 \n");
             dc_source = R_GetCachedColumn(midtexture,texturecolumn);
             colfunc ();
             ceilingclip[rw_x] = viewheight;
@@ -348,7 +348,7 @@ void R_RenderSegLoop (void)
                     dc_yl = yl;
                     dc_yh = mid;
                     dc_texturemid = rw_toptexturemid;
-                    printf("In R_RenderSegLoop before R_GetCachedColumn 2 \n");
+                    //printf("In R_RenderSegLoop before R_GetCachedColumn 2 \n");
                     dc_source = R_GetCachedColumn(toptexture,texturecolumn); 
                     colfunc ();
                     ceilingclip[rw_x] = mid;
@@ -378,7 +378,7 @@ void R_RenderSegLoop (void)
                     dc_yl = mid;
                     dc_yh = yh;
                     dc_texturemid = rw_bottomtexturemid;
-                    printf("In R_RenderSegLoop before R_GetCachedColumn 3 \n"); 
+                    //printf("In R_RenderSegLoop before R_GetCachedColumn 3 \n"); 
                     dc_source = R_GetCachedColumn(bottomtexture,
                                             texturecolumn);
                     colfunc ();
@@ -509,6 +509,8 @@ R_StoreWallRange
 
         ds_p->silhouette = SIL_BOTH;
         ds_p->sprtopclip = (short*)screenheightarray;
+        printf("Initializing ds_p->sprbottomclip to negonearray, ds : %p\n", ds_p); 
+        printf("(short*)negonearray: %p\n", (short*)negonearray); 
         ds_p->sprbottomclip = (short*)negonearray;
         ds_p->bsilheight = INT_MAX;
         ds_p->tsilheight = INT_MIN;
@@ -516,6 +518,7 @@ R_StoreWallRange
     else
     {
         // two sided line
+        printf("Initializing ds_p->sprbottomclip to NULL, ds : %p\n", ds_p);
         ds_p->sprtopclip = ds_p->sprbottomclip = NULL;
         ds_p->silhouette = 0;
         
@@ -545,6 +548,8 @@ R_StoreWallRange
                 
         if (backsector->ceilingheight <= frontsector->floorheight)
         {
+            printf("Initializing ds_p->sprbottomclip to negonearray, ds : %p\n", ds_p);
+            printf("(short*)negonearray: %p\n", (short*)negonearray);
             ds_p->sprbottomclip = (short*)negonearray;
             ds_p->bsilheight = INT_MAX;
             ds_p->silhouette |= SIL_BOTTOM;
@@ -761,6 +766,7 @@ R_StoreWallRange
          && !ds_p->sprbottomclip)
     {
         memcpy (lastopening, floorclip+start, sizeof(*lastopening)*(rw_stopx-start));
+        printf("Initializing ds_p->sprbottomclip to lastopening - start : %p , ds : %p\n", lastopening - start, ds_p);
         ds_p->sprbottomclip = lastopening - start;
         lastopening += rw_stopx - start;        
     }

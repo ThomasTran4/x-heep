@@ -1003,8 +1003,8 @@ void R_ExecuteSetViewSize (void)
 
     if (setblocks == 11)
     {
-        scaledviewwidth = SCREENWIDTH;
-        viewheight = SCREENHEIGHT;
+        scaledviewwidth = SCREENWIDTH_PHYSICAL;
+        viewheight = SCREENHEIGHT_PHYSICAL - ST_HEIGHT_PHYSICAL;
     }
     else
     {
@@ -1223,13 +1223,17 @@ void R_RenderPlayerView (player_t* player)
     PRINTF("R_RenderBSPNode start ... \n");
     R_RenderBSPNode (numnodes-1);
     PRINTF("finish\n");
-    
+
+    X_Display_Draw_Screen_200x200(); //debug 
+
     // Check for new console commands.
     NetUpdate ();
     
     PRINTF("R_DrawPlanes start ... \n");
     R_DrawPlanes ();
     PRINTF("finish\n");
+    
+    X_Display_Draw_Screen_200x200(); //debug 
     
     // Check for new console commands.
     NetUpdate ();

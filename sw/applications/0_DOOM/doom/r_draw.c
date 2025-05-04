@@ -100,7 +100,7 @@ int                     dccount;
 
 pixel_t *ylookup(int y)
 {
-    return I_VideoBuffer + (y+viewwindowy)*SCREENWIDTH; 
+    return I_VideoBuffer + (y+viewwindowy)*SCREENWIDTH_PHYSICAL; 
 }
 
 int columnofs(int x)
@@ -118,7 +118,7 @@ void R_DrawTransColumn (void)
     fixed_t             frac;
     fixed_t             fracstep;        
 
-    count = dc_yh - dc_yl; 
+    count = (dc_yh - dc_yl)/2; 
 
     // Zero length, column does not exceed a pixel.
     if (count < 0) 
@@ -161,8 +161,8 @@ void R_DrawTransColumn (void)
             *dest = (uint8_t)temp_val_data;
         }
         
-        dest += SCREENWIDTH; 
-        frac += fracstep;
+        dest += SCREENWIDTH_PHYSICAL; 
+        frac += 2*fracstep;
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
         memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
         
@@ -183,7 +183,7 @@ void R_DrawColumn (void)
     fixed_t             frac;
     fixed_t             fracstep;        
 
-    count = dc_yh - dc_yl; 
+    count = (dc_yh - dc_yl)/2; 
 
     // Zero length, column does not exceed a pixel.
     if (count < 0) 
@@ -202,7 +202,10 @@ void R_DrawColumn (void)
     // Framebuffer destination address.
     // Use ylookup LUT to avoid multiply with ScreenWidth.
     // Use columnofs LUT for subwindows? 
-    dest = ylookup(dc_yl) + columnofs(dc_x);  
+    
+    //dest = ylookup(dc_yl) + columnofs(dc_x);  XHEEP comment  
+    dest = I_VideoBuffer + dc_yl*SCREENWIDTH_PHYSICAL + dc_x; 
+
 
     // Determine scaling,
     //  which is the only mapping to be done.
@@ -223,8 +226,8 @@ void R_DrawColumn (void)
         X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
         *dest = (uint8_t)temp_val_data;
         
-        dest += SCREENWIDTH; 
-        frac += fracstep;
+        dest += SCREENWIDTH_PHYSICAL; 
+        frac += 2*fracstep;
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
         memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
         
@@ -301,7 +304,7 @@ void R_DrawColumnLow (void)
     fixed_t             fracstep;        
     int                 x;
  
-    count = dc_yh - dc_yl; 
+    count = (dc_yh - dc_yl)/2; 
 
     // Zero length.
     if (count < 0) 
@@ -335,9 +338,9 @@ void R_DrawColumnLow (void)
         // Hack. Does not work corretly.
         X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
         *dest2 = *dest = (uint8_t)temp_val_data;
-        dest += SCREENWIDTH;
-        dest2 += SCREENWIDTH;
-        frac += fracstep; 
+        dest += SCREENWIDTH_PHYSICAL;
+        dest2 += SCREENWIDTH_PHYSICAL;
+        frac += 2*fracstep; 
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
         memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
 
@@ -389,7 +392,7 @@ void R_DrawFuzzColumn (void)
     if (dc_yh == viewheight-1) 
         dc_yh = viewheight - 2; 
                  
-    count = dc_yh - dc_yl; 
+    count = (dc_yh - dc_yl)/2; 
 
     // Zero length.
     if (count < 0) 
@@ -427,9 +430,9 @@ void R_DrawFuzzColumn (void)
         if (++fuzzpos == FUZZTABLE) 
             fuzzpos = 0;
         
-        dest += SCREENWIDTH;
+        dest += SCREENWIDTH_PHYSICAL;
 
-        frac += fracstep; 
+        frac += 2*fracstep; 
     } while (count--); 
 } 
 
@@ -452,7 +455,7 @@ void R_DrawFuzzColumnLow (void)
     if (dc_yh == viewheight-1) 
         dc_yh = viewheight - 2; 
                  
-    count = dc_yh - dc_yl; 
+    count = (dc_yh - dc_yl)/2; 
 
     // Zero length.
     if (count < 0) 
@@ -497,10 +500,10 @@ void R_DrawFuzzColumnLow (void)
         if (++fuzzpos == FUZZTABLE) 
             fuzzpos = 0;
         
-        dest += SCREENWIDTH;
-        dest2 += SCREENWIDTH;
+        dest += SCREENWIDTH_PHYSICAL;
+        dest2 += SCREENWIDTH_PHYSICAL;
 
-        frac += fracstep; 
+        frac += 2*fracstep; 
     } while (count--); 
 } 
  
@@ -577,7 +580,7 @@ void R_DrawTranslatedColumn (void)
     fixed_t             frac;
     fixed_t             fracstep;        
  
-    count = dc_yh - dc_yl; 
+    count = (dc_yh - dc_yl)/2; 
     if (count <  0) 
         return; 
                                  
@@ -614,9 +617,9 @@ void R_DrawTranslatedColumn (void)
         //  is mapped to gray, red, black/indigo.
         X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
         *dest = (uint8_t)temp_val_data;
-        dest += SCREENWIDTH;
+        dest += SCREENWIDTH_PHYSICAL;
         
-        frac += fracstep; 
+        frac += 2*fracstep; 
         X_spi_read(dc_source + (frac>>FRACBITS), &temp_val_data, 1);  
         memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
     } while (count--); 
@@ -760,26 +763,26 @@ int                     dscount;
 void R_DrawSpan (void) 
 { 
 
-    printf("R_DrawSpan\n"); 
+    //printf("R_DrawSpan\n"); 
     unsigned int position, step;
     pixel_t *dest;
     int count;
     int spot;
     unsigned int xtemp, ytemp;
-/*
+
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1
         || ds_x1<0
         || ds_x2>=SCREENWIDTH
         || (unsigned)ds_y>SCREENHEIGHT)
     {
-        I_Error( "R_DrawSpan: %i to %i at %i",
+        printf( "R_DrawSpan: %i to %i at %i",
                  ds_x1,ds_x2,ds_y);
     }
 
 //      dscount++;
 #endif
-*/
+
     // Pack position and step variables into a single 32-bit integer,
     // with x in the top 16 bits and y in the bottom 16 bits.  For
     // each 16-bit part, the top 6 bits are the integer part and the
@@ -790,11 +793,11 @@ void R_DrawSpan (void)
     step = ((ds_xstep << 10) & 0xffff0000)
          | ((ds_ystep >> 6)  & 0x0000ffff);
 
-    printf("R_DrawSpan before dest calc\n");
+    //printf("R_DrawSpan before dest calc\n");
     dest = ylookup(ds_y) + columnofs(ds_x1);
 
     // We do not check for zero spans here?
-    count = ds_x2 - ds_x1;
+    count = (ds_x2 - ds_x1)/2;
 
     uint32_t temp_data; 
 
@@ -811,7 +814,7 @@ void R_DrawSpan (void)
         X_spi_read(ds_colormap + ((temp_data >> 0)  & 0xFF), &temp_data, 1); 
         *dest++ = (uint8_t)temp_data;
 
-        position += step;
+        position += 2*step;
 
     } while (count--);
 }
@@ -920,7 +923,7 @@ void R_DrawSpanLow (void)
     step = ((ds_xstep << 10) & 0xffff0000)
          | ((ds_ystep >> 6)  & 0x0000ffff);
 
-    count = (ds_x2 - ds_x1);
+    count = (ds_x2 - ds_x1)/2;
 
     // Blocky mode, need to multiply by 2.
     ds_x1 <<= 1;
@@ -937,7 +940,7 @@ void R_DrawSpanLow (void)
         ytemp = (position >> 4) & 0x0fc0;
         xtemp = (position >> 26);
         spot = xtemp | ytemp;
-        X_spi_read(ds_source[spot], &temp_data, 1); 
+        X_spi_read(ds_source+ spot, &temp_data, 1); 
 
         // Lowres/blocky mode does it twice,
         //  while scale is adjusted appropriately.
@@ -945,7 +948,7 @@ void R_DrawSpanLow (void)
         *dest++ = (uint8_t)temp_data;
         *dest++ = (uint8_t)temp_data;
 
-        position += step;
+        position += 2*step;
 
     } while (count--);
 }

@@ -189,7 +189,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
     //V_MarkRect(x, y, w, h);
 
     col = 0;
-    desttop = dest_screen + y * SCREENWIDTH + x;
+    desttop = dest_screen + y * SCREENWIDTH_PHYSICAL + x;
     column_t tempcolumn;
     uint32_t temp_column_data;
     uint32_t temp_source;
@@ -208,7 +208,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
         while (tempcolumn.topdelta != 0xff)
         {
             source = (byte *)column + 3;
-            dest = desttop + tempcolumn.topdelta/2*SCREENWIDTH;
+            dest = desttop + tempcolumn.topdelta/2*SCREENWIDTH_PHYSICAL;
             count = tempcolumn.length/2;
 
             while (count--)
@@ -216,7 +216,7 @@ void V_DrawPatch(int x, int y, patch_t *patch)
                 X_spi_read(source, &temp_source, 1);
                 *dest = (uint8_t)temp_source; 
                 source += 2; 
-                dest += SCREENWIDTH; 
+                dest += SCREENWIDTH_PHYSICAL; 
             }
             column = (column_t *)((byte *)column + tempcolumn.length + 4);
             X_spi_read(column, &temp_column_data, 1);  
@@ -674,7 +674,7 @@ void V_UseBuffer(pixel_t *buffer)
 
 void Set_STBuffer()
 {
-    const unsigned int st_offset = ((SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH);
+    const unsigned int st_offset = ((SCREENHEIGHT_PHYSICAL - ST_HEIGHT_PHYSICAL) * SCREENWIDTH_PHYSICAL);
     dest_screen = I_VideoBuffer + st_offset;
 }
 

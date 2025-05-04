@@ -367,7 +367,8 @@ typedef pixel_t     lighttable_t;
 //
 // ?
 //
-typedef struct  __attribute__((packed)) drawseg_s
+//typedef struct  __attribute__((packed)) drawseg_s
+typedef struct  drawseg_s
 {
     seg_t*      curline;
     short       x1; // NRFD-NOTE: Was int
