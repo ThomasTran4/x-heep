@@ -112,7 +112,9 @@ HUlib_drawTextLine
 	    && c >= l->sc
 	    && c <= '_')
 	{
-	    w = SHORT(l->f[c - l->sc]->width);
+        patch_t temppatch; 
+        X_spi_read(l->f[c - l->sc], &temppatch, sizeof(temppatch)/4); 
+	    w = SHORT(temppatch.width);
 	    if (x+w > SCREENWIDTH)
 		break;
 	    V_DrawPatchDirect(x, l->y, l->f[c - l->sc]);
@@ -246,6 +248,7 @@ void HUlib_drawSText(hu_stext_t* s)
 	l = &s->l[idx];
 
 	// need a decision made here on whether to skip the draw
+    printf("IN HUlib_drawSText before HUlib_drawTextLine\n"); 
 	HUlib_drawTextLine(l, false); // no cursor, please
     }
 

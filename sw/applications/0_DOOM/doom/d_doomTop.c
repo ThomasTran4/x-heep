@@ -504,7 +504,7 @@ void D_DoomLoop (void)
     #if DEBUG_SETUP
     // this to launch directly a new game without having to press keys...
     // useful if you are in a hurry and want to test if new code is faster or slower.
-    short startedGame = false;
+    boolean startedGame = false;
     #endif
 
     //I_SetWindowTitle(gamedescription); //useless 
@@ -569,7 +569,8 @@ void D_DoomLoop (void)
         if (!startedGame)
         {
             startedGame = true;
-            G_DeferedInitNew(1, 1, 1);
+            //G_DeferedInitNew(1, 1, 1);
+            D_AdvanceDemo(); 
         }
         #endif
 

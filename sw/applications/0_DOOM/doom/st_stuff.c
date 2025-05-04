@@ -1069,14 +1069,14 @@ void ST_doRefresh(void)
     st_firsttime = false;
 
     // draw status bar background to off-screen buff
-    printf("In ST_doRefresh before ST_refreshBackground\n");
+    //printf("In ST_doRefresh before ST_refreshBackground\n");
     ST_refreshBackground();
 
     // and refresh all widgets
-    printf("In ST_doRefresh before ST_drawWidgets\n");
+    //printf("In ST_doRefresh before ST_drawWidgets\n");
     ST_drawWidgets(true);
 
-    X_Display_Draw_Screen_200x200(); //debug 
+    //X_Display_Draw_Screen_200x200(); //debug 
 
 }
 
@@ -1101,13 +1101,13 @@ void ST_Drawer (boolean fullscreen, boolean refresh)
     
     if (st_firsttime) 
     {
-        printf("In ST_Drawer before ST_doRefresh\n");
+        //printf("In ST_Drawer before ST_doRefresh\n");
         ST_doRefresh();
     }
     // Otherwise, update as little as possible
     else 
     {
-        printf("In ST_Drawer before ST_doPaletteStuff\n");
+        //printf("In ST_Drawer before ST_doPaletteStuff\n");
         ST_diffDraw();
     }
 

@@ -457,11 +457,16 @@ void HU_Start(void)
 
 void HU_Drawer(void)
 {
+    printf ("In HU_Drawer before HUlib_drawSText\n");
     HUlib_drawSText(&w_message);
     HUlib_drawSText(&w_fps);
     // HUlib_drawIText(&w_chat); // NRFD-TODO: Chat
     if (automapactive)
+    {
+        printf ("In HU_Drawer before HUlib_drawSText\n");
         HUlib_drawTextLine(&w_title, false);
+    }
+        
 }
 
 void HU_Erase(void)

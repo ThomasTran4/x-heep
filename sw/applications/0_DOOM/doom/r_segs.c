@@ -240,7 +240,7 @@ R_RenderMaskedSegRange
 
 void R_RenderSegLoop (void)
 {
-    PRINTF("R_RenderSegLoop\n");
+    //PRINTF("R_RenderSegLoop\n");
     angle_t             angle;
     unsigned            index;
     int                 yl;
@@ -509,8 +509,8 @@ R_StoreWallRange
 
         ds_p->silhouette = SIL_BOTH;
         ds_p->sprtopclip = (short*)screenheightarray;
-        printf("Initializing ds_p->sprbottomclip to negonearray, ds : %p\n", ds_p); 
-        printf("(short*)negonearray: %p\n", (short*)negonearray); 
+        //printf("Initializing ds_p->sprbottomclip to negonearray, ds : %p\n", ds_p); 
+        //printf("(short*)negonearray: %p\n", (short*)negonearray); 
         ds_p->sprbottomclip = (short*)negonearray;
         ds_p->bsilheight = INT_MAX;
         ds_p->tsilheight = INT_MIN;
@@ -518,7 +518,7 @@ R_StoreWallRange
     else
     {
         // two sided line
-        printf("Initializing ds_p->sprbottomclip to NULL, ds : %p\n", ds_p);
+        //printf("Initializing ds_p->sprbottomclip to NULL, ds : %p\n", ds_p);
         ds_p->sprtopclip = ds_p->sprbottomclip = NULL;
         ds_p->silhouette = 0;
         
@@ -548,8 +548,8 @@ R_StoreWallRange
                 
         if (backsector->ceilingheight <= frontsector->floorheight)
         {
-            printf("Initializing ds_p->sprbottomclip to negonearray, ds : %p\n", ds_p);
-            printf("(short*)negonearray: %p\n", (short*)negonearray);
+            //printf("Initializing ds_p->sprbottomclip to negonearray, ds : %p\n", ds_p);
+            //printf("(short*)negonearray: %p\n", (short*)negonearray);
             ds_p->sprbottomclip = (short*)negonearray;
             ds_p->bsilheight = INT_MAX;
             ds_p->silhouette |= SIL_BOTTOM;
@@ -766,7 +766,7 @@ R_StoreWallRange
          && !ds_p->sprbottomclip)
     {
         memcpy (lastopening, floorclip+start, sizeof(*lastopening)*(rw_stopx-start));
-        printf("Initializing ds_p->sprbottomclip to lastopening - start : %p , ds : %p\n", lastopening - start, ds_p);
+        //printf("Initializing ds_p->sprbottomclip to lastopening - start : %p , ds : %p\n", lastopening - start, ds_p);
         ds_p->sprbottomclip = lastopening - start;
         lastopening += rw_stopx - start;        
     }

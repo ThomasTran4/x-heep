@@ -509,6 +509,13 @@ R_DrawVisSprite
     patch_t temp_patch;
     X_spi_read(patch, &temp_patch, sizeof(temp_patch)/4); 
 
+    int w = SHORT(temp_patch.width);
+    int patch_size = sizeof(patch_t) + (w - 8) * sizeof(int);
+    uint8_t raw_buffer[patch_size];
+    X_spi_read(patch, (uint32_t *)raw_buffer, patch_size/4); 
+
+    patch_t *full_patch = (patch_t *)raw_buffer;
+
     dc_colormap = vis->colormap;
     
     if (!dc_colormap)
@@ -535,11 +542,11 @@ R_DrawVisSprite
     {
         texturecolumn = frac>>FRACBITS;
 #ifdef RANGECHECK
-        if (texturecolumn < 0 || texturecolumn >= SHORT(temp_patch.width))
+        if (texturecolumn < 0 || texturecolumn >= w)
             I_Error ("R_DrawSpriteRange: bad texturecolumn");
 #endif
         column = (column_t *) ((byte *)patch +
-                               LONG(temp_patch.columnofs[texturecolumn]));
+                               LONG(full_patch->columnofs[texturecolumn]));
         R_DrawMaskedColumn (column);
     }
     dc_debug = false;
@@ -619,8 +626,8 @@ void R_ProjectSprite (mobj_t* thing)
 
     int frame = thing->state->frame;
 
-    printf("(frame&FF_FRAMEMASK): %i\n", (frame&FF_FRAMEMASK));
-    printf("sprdef->numframes: %i\n", sprdef->numframes); 
+    //printf("(frame&FF_FRAMEMASK): %i\n", (frame&FF_FRAMEMASK));
+    //printf("sprdef->numframes: %i\n", sprdef->numframes); 
 
     
 
@@ -632,7 +639,7 @@ void R_ProjectSprite (mobj_t* thing)
 
     sprframe = &sprdef->spriteframes[frame & FF_FRAMEMASK];
 
-    printf("In R_ProjectSprite before if\n"); 
+    //printf("In R_ProjectSprite before if\n"); 
     if (sprframe->rotate)
     {
         // choose a different rotation based on player view
@@ -648,7 +655,7 @@ void R_ProjectSprite (mobj_t* thing)
         flip = R_SpriteGetFlip(sprframe, 0);
     }
     
-    printf("In R_ProjectSprite before sprite offset\n");
+    //printf("In R_ProjectSprite before sprite offset\n");
     // calculate edges of the shape
     tx -= R_SpriteOffset(lump);   
     x1 = (centerxfrac + FixedMul (tx,xscale) ) >>FRACBITS;
@@ -657,7 +664,7 @@ void R_ProjectSprite (mobj_t* thing)
     if (x1 > viewwidth)
         return;
     
-    printf("In R_ProjectSprite before sprite width\n");
+    //printf("In R_ProjectSprite before sprite width\n");
     tx +=  R_SpriteWidth(lump);
     x2 = ((centerxfrac + FixedMul (tx,xscale) ) >>FRACBITS) - 1;
 
@@ -666,7 +673,7 @@ void R_ProjectSprite (mobj_t* thing)
         return;
     
     // store information in a vissprite
-    printf("In R_ProjectSprite before R_NewVisSprite\n");
+    //printf("In R_ProjectSprite before R_NewVisSprite\n");
     vis = R_NewVisSprite ();
     // vis->mobjflags = thing->flags; // NRFD-TODO?
     vis->scale = xscale<<detailshift;
@@ -680,14 +687,14 @@ void R_ProjectSprite (mobj_t* thing)
     vis->gzt = thing->z + R_SpriteTopOffset(lump);
     */
    
-    printf("In R_ProjectSprite before R_SpriteTopOffset\n");
+    //printf("In R_ProjectSprite before R_SpriteTopOffset\n");
     fixed_t gzt = thing->z + R_SpriteTopOffset(lump);
     vis->texturemid = gzt - viewz;
 
     vis->x1 = x1 < 0 ? 0 : x1;
     vis->x2 = x2 >= viewwidth ? viewwidth-1 : x2; 
     
-    printf("In R_ProjectSprite before FixedDiv\n");
+    //printf("In R_ProjectSprite before FixedDiv\n");
     iscale = FixedDiv (FRACUNIT, xscale);
 
 
@@ -735,7 +742,7 @@ void R_ProjectSprite (mobj_t* thing)
         vis->colormap = spritelights[index];
     } 
 
-    printf("In R_ProjectSprite end\n");
+    //printf("In R_ProjectSprite end\n");
 }
 
 
@@ -1033,7 +1040,7 @@ void R_DrawSprite (vissprite_t* spr)
     fixed_t             lowscale;
     int                 silhouette;
 
-    printf ("In R_DrawSprite\n"); 
+    //printf ("In R_DrawSprite\n"); 
     fixed_t gx  = spr->thing->x;
     fixed_t gy  = spr->thing->y;
     fixed_t gz  = spr->thing->z;
@@ -1071,8 +1078,8 @@ void R_DrawSprite (vissprite_t* spr)
             scale = ds->scale2;
         }
                 
-        printf ("In R_DrawSprite before if\n");
-        printf("R_PointOnSegSide (gx, gy, ds->curline) : %i\n", R_PointOnSegSide (gx, gy, ds->curline)); 
+        //printf ("In R_DrawSprite before if\n");
+       // printf("R_PointOnSegSide (gx, gy, ds->curline) : %i\n", R_PointOnSegSide (gx, gy, ds->curline)); 
 
         if (scale < spr->scale
             || ( lowscale < spr->scale
@@ -1081,7 +1088,7 @@ void R_DrawSprite (vissprite_t* spr)
             // masked mid texture?
             if (ds->maskedtexturecol)   
             {
-                printf ("In R_DrawSprite before R_RenderMaskedSegRange\n"); 
+                //printf ("In R_DrawSprite before R_RenderMaskedSegRange\n"); 
                 R_RenderMaskedSegRange (ds, r1, r2);
             }
                 
@@ -1092,14 +1099,14 @@ void R_DrawSprite (vissprite_t* spr)
         
         // clip this piece of the sprite
         silhouette = ds->silhouette;
-        printf ("In R_DrawSprite before if 2\n");
+        //printf ("In R_DrawSprite before if 2\n");
         if (gz >= ds->bsilheight)
             silhouette &= ~SIL_BOTTOM;
 
         if (gzt <= ds->tsilheight)
             silhouette &= ~SIL_TOP;
                         
-        printf ("In R_DrawSprite before if 3, silhoute = %i\n", silhouette); 
+        //printf ("In R_DrawSprite before if 3, silhoute = %i\n", silhouette); 
         if (silhouette == 1)
         {
             // bottom sil
@@ -1119,16 +1126,15 @@ void R_DrawSprite (vissprite_t* spr)
             // both
             for (x=r1 ; x<=r2 ; x++)
             {
-                printf("ds : %p\n", ds); 
-                printf("sprbottomclip: %p\n", ds->sprbottomclip);
-                printf("(short*)negonearray: %p\n", (short*)negonearray); 
-                printf("Address of negonearray: %p\n", (void *)negonearray);
-                printf("NULL : %p/n", NULL);
+                //printf("ds : %p\n", ds); 
+                //printf("sprbottomclip: %p\n", ds->sprbottomclip);
+                //printf("(short*)negonearray: %p\n", (short*)negonearray); 
+                //printf("Address of negonearray: %p\n", (void *)negonearray)
 
                 
-                printf("sprbottomclip: %i\n", ds->sprbottomclip[0]);
-                printf("sprbottomclip[x]: %i\n", ds->sprbottomclip[x]);
-                printf("ds->sprtopclip[x]: %i\n", ds->sprtopclip[x]);
+                //printf("sprbottomclip: %i\n", ds->sprbottomclip[0]);
+                //printf("sprbottomclip[x]: %i\n", ds->sprbottomclip[x]);
+                //printf("ds->sprtopclip[x]: %i\n", ds->sprtopclip[x]);
                 if (clipbot[x] == -2)
                     clipbot[x] = ds->sprbottomclip[x];
                 if (cliptop[x] == -2)
@@ -1141,7 +1147,7 @@ void R_DrawSprite (vissprite_t* spr)
     // all clipping has been performed, so draw the sprite
 
     // check for unclipped columns
-    printf ("In R_DrawSprite before if 4\n");
+    //printf ("In R_DrawSprite before if 4\n");
     for (x = spr->x1 ; x<=spr->x2 ; x++)
     {
         if (clipbot[x] == -2)           
@@ -1153,7 +1159,7 @@ void R_DrawSprite (vissprite_t* spr)
                 
     mfloorclip = clipbot;
     mceilingclip = cliptop;
-    printf ("In R_DrawSprite before R_DrawVisSprite \n"); 
+    //printf ("In R_DrawSprite before R_DrawVisSprite \n"); 
     R_DrawVisSprite (spr, spr->x1, spr->x2);
 }
 
@@ -1168,7 +1174,7 @@ void R_DrawMasked (void)
     vissprite_t*        spr;
     drawseg_t*          ds;
         
-    printf("In R_DrawMasked before R_SortVisSprites\n"); 
+    //printf("In R_DrawMasked before R_SortVisSprites\n"); 
     R_SortVisSprites ();
 
     if (vissprite_p > vissprites)
@@ -1184,16 +1190,16 @@ void R_DrawMasked (void)
              spr != NULL ;
              spr=spr->next)
         {
-            printf("In R_DrawMasked before R_DrawSprite\n"); 
+            //printf("In R_DrawMasked before R_DrawSprite\n"); 
             R_DrawSprite (spr);
-            printf("In R_DrawMasked after R_DrawSprite\n");
+            //printf("In R_DrawMasked after R_DrawSprite\n");
         }
     }
 
     // render any remaining masked mid textures
     for (ds=ds_p-1 ; ds >= drawsegs ; ds--) {
         if (ds->maskedtexturecol) {
-            printf("In R_DrawMasked before R_RenderMaskedSegRange\n");
+            //printf("In R_DrawMasked before R_RenderMaskedSegRange\n");
             R_RenderMaskedSegRange (ds, ds->x1, ds->x2);
         }
     }
@@ -1201,7 +1207,7 @@ void R_DrawMasked (void)
     // draw the psprites on top of everything
     //  but does not draw on side views
     if (!viewangleoffset) {
-        printf("In R_DrawMasked before R_DrawPlayerSprites\n");
+        //printf("In R_DrawMasked before R_DrawPlayerSprites\n");
         R_DrawPlayerSprites ();       
     }              
         

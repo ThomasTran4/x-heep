@@ -275,7 +275,7 @@ void P_LoadSegs (int lump)
 // X-HEEP comment : This function returns an adress in flash that must be read using X_spi_read
 seg_t *GetSeg(int num)
 {
-    return (seg_t*)&mapsegs[num];
+    return (seg_t*)(mapsegs + num);
 }
 
 sector_t *SegFrontSector(seg_t *seg) {

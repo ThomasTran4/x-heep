@@ -545,7 +545,7 @@ void R_Subsector (int num)
         //printf("In R_Subsector before R_FindPlane\n");
         ceilingplane = R_FindPlane (frontsector->ceilingheight,
                                     frontsector->ceilingpic,
-                                    frontsector->lightlevel);
+                                    frontsector->lightlevel); //worth check debug 
     }
     else
         ceilingplane = NULL;
@@ -580,18 +580,18 @@ void R_RenderBSPNode (int bspnum)
 {
     int         side;
 
-    printf("In R_RenderBSPNode\n"); 
+    //printf("In R_RenderBSPNode\n"); 
     // Found a subsector?
     if (bspnum & NF_SUBSECTOR)
     {
         if (bspnum == -1) 
         {
-            printf("In R_RenderBSPNode before R_Subsector\n");
+            //printf("In R_RenderBSPNode before R_Subsector\n");
             R_Subsector (0);
         }                     
         else
         {
-            printf("In R_RenderBSPNode before R_Subsector\n");
+            //printf("In R_RenderBSPNode before R_Subsector\n");
             R_Subsector (bspnum&(~NF_SUBSECTOR));
         }
             
@@ -603,11 +603,11 @@ void R_RenderBSPNode (int bspnum)
     int bspnum_back;
     {
         // NRFD-TODO: Optimize stack?
-        printf("In R_RenderBSPNode before GetNode\n");   
+        //printf("In R_RenderBSPNode before GetNode\n");   
         node_t bsp = GetNode(bspnum); //&nodes[bspnum];
         
         // Decide which side the view point is on.
-        printf("In R_RenderBSPNode before R_PointOnSide\n");
+        //printf("In R_RenderBSPNode before R_PointOnSide\n");
         side = R_PointOnSide (viewx, viewy, &bsp);
 
         bspnum_front = bsp.children[side];
@@ -619,11 +619,11 @@ void R_RenderBSPNode (int bspnum)
     R_RenderBSPNode (bspnum_front); 
 
     // Possibly divide back space.
-    printf("In R_RenderBSPNode before R_CheckBBox\n");
+    //printf("In R_RenderBSPNode before R_CheckBBox\n");
     if (R_CheckBBox (bbox)) {
         R_RenderBSPNode (bspnum_back);
     }
-    printf("In R_RenderBSPNode end\n");
+    //printf("In R_RenderBSPNode end\n");
 }
 
 
