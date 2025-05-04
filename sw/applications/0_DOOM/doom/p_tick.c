@@ -167,7 +167,11 @@ void P_Ticker (void)
                
     for (i=0 ; i<MAXPLAYERS ; i++)
         if (playeringame[i])
+        {
+            printf("In P_Ticker before P_PlayerThink\n"); 
             P_PlayerThink (&players[i]);
+        }
+            
                         
     P_RunThinkers ();
     P_UpdateSpecials ();

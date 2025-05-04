@@ -354,10 +354,14 @@ size_t store_loc;
 
 void R_GenerateInit(int texture_storage_size)
 {
+    /*
     X_ReadButtons();
     I_Sleep(1);
     X_ReadButtons();
     generate_to_flash = X_ButtonState(1);
+    */
+
+    generate_to_flash = true; 
 
     generate_buffer = (byte*)I_VideoBuffers;
     store_loc = X_spi_alloc_sector();
@@ -403,19 +407,28 @@ void R_GenerateComposite_N (int num, texture_t *texture, char *patch_names)
     maptexture_t temp; 
     X_spi_read(mtex, &temp, sizeof(temp)/4); 
     int patchcount = SHORT(temp.patchcount);
+    
+    int maptexture_size = sizeof(maptexture_t) + (patchcount - 1) * sizeof(mappatch_t);
+    uint8_t raw_buffer[maptexture_size];
+    X_spi_read(mtex, (uint32_t *)raw_buffer, maptexture_size/4);
+    maptexture_t *full_maptexture = (maptexture_t *)raw_buffer;
+
     for (i=0; i<patchcount; i++)
     {
         int          x;
         int          x1;
         int          x2;
-        mappatch_t*  mpatch        = &mtex->patches[i]; //X-HEEP comment : mpatch is an adress in flash it must be read using X_spi_read
+        mappatch_t*  mpatch        = &full_maptexture->patches[i]; //X-HEEP comment : mpatch is an adress in flash it must be read using X_spi_read
+        
+        /*
         mappatch_t   temp2; 
         uint32_t temp2_data_buffer[3]; 
         X_spi_read(mpatch, &temp2_data_buffer, 3);
         memcpy(&temp2, &temp2_data_buffer, sizeof(mappatch_t));  // Copy only 10 bytes
-        
-        short        patch_num     = SHORT(temp2.patch);
-        int          originy       = SHORT(temp2.originy);
+        */
+
+        short        patch_num     = SHORT(mpatch->patch);
+        int          originy       = SHORT(mpatch->originy);
         char*        patch_name    = patch_names + patch_num * 8; //X-HEEP comment : patch_names is an adress in flash it must be read using X_spi_read
         char temp_patch_name[8] = {0}; 
         X_spi_read(patch_name, &temp_patch_name, sizeof(temp_patch_name)/4);
@@ -430,10 +443,18 @@ void R_GenerateComposite_N (int num, texture_t *texture, char *patch_names)
         // int *patch_columnofs = realpatch->columnofs;
         // NOTE: Having some trouble with reliable reading of this data from QSPI
         patch_t temp3;
-        X_spi_read(realpatch, &temp3, sizeof(temp3)/4); 
-        memcpy(columnofs, temp3.columnofs, 256*sizeof(int));
+        X_spi_read(realpatch, &temp3, sizeof(temp3)/4);
+        int w = SHORT(temp3.width);
 
-        x1 = SHORT(temp2.originx);
+        int patch_size = sizeof(patch_t) + (w - 8) * sizeof(int);
+        uint8_t raw_buffer[patch_size];
+        X_spi_read(realpatch, (uint32_t *)raw_buffer, patch_size/4); 
+
+        patch_t *full_patch = (patch_t *)raw_buffer;
+        
+        memcpy(columnofs, full_patch->columnofs, 256*sizeof(int));
+
+        x1 = SHORT(mpatch->originx);
         x2 = x1 + SHORT(temp3.width);
         if (x1<0)
             x = 0;
@@ -753,7 +774,7 @@ void R_InitTextures (void)
     //     M_StringCopy(name, patch_names + i * 8, sizeof(name));
     //     patchlookup[i] = W_CheckNumForName(name);
     // }
-    W_ReleaseLumpName(DEH_String("PNAMES"));
+    //W_ReleaseLumpName(DEH_String("PNAMES"));
     // Load the map texture definitions from textures.lmp.
     // The data is contained in one or two lumps,
     //  TEXTURE1 for shareware, plus TEXTURE2 for commercial.
@@ -893,8 +914,7 @@ void R_InitTextures (void)
 
     patch = texture_patches;
 
-    R_GenerateInit(texture_storage_size); //X-HEEP COMMENT : have not looked into the buttons yet 
-
+    R_GenerateInit(texture_storage_size);  
     for (i=0 ; i<numtextures ; i++, directory++) {
 
         if (i == numtextures1)
@@ -939,6 +959,7 @@ void R_InitTextures (void)
         */
     }
     
+    /*
     // Z_Free(patchlookup);
     W_ReleaseLumpName(DEH_String("PNAMES"));
 
@@ -946,8 +967,9 @@ void R_InitTextures (void)
     if (maptex2)
         W_ReleaseLumpName(DEH_String("TEXTURE2"));
     
-    // Precalculate whatever possible.      
+    */
 
+    // Precalculate whatever possible.      
     PRINTF("NRFD-TODO: R_InitTextures\n");
     /*
     for (i=0 ; i<numtextures ; i++)

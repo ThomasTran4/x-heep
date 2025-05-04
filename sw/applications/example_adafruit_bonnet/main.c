@@ -16,8 +16,8 @@
 
 #include "core_v_mini_mcu.h"
 
-#define SHIFTED_ESL_WITH_BUTTONS 0
-#define STATIC_ESL_LOGO 1
+#define SHIFTED_ESL_WITH_BUTTONS 1
+#define STATIC_ESL_LOGO 0
 #define CHANGING_COLOR 0
 #define FILL_SCREEN_PIXEL_BY_PIXEL 0
 
