@@ -569,8 +569,8 @@ void D_DoomLoop (void)
         if (!startedGame)
         {
             startedGame = true;
-            G_DeferedInitNew(1, 1, 1);
-            //D_AdvanceDemo(); 
+            //G_DeferedInitNew(1, 1, 1);
+            D_AdvanceDemo(); 
         }
         #endif
 
@@ -1351,9 +1351,6 @@ void D_DoomMain (void)
 
     //I_AtExit(D_Endoom, false); //Useless 
 
-    int32_t test = read_finesine(2250); 
-    printf("test : %i\n", test); 
-    
     // print banner
 
     I_PrintBanner(DOOM_PACKAGE_STRING);

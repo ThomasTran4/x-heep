@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
     const uint32_t mask = 1 << FIC_FLASH_MEIE;
     CSR_SET_BITS(CSR_REG_MIE, mask);
 
-    // Buffer to hold data for final comparison
+    // Buffer to hold data for final comparisonSTART_ADDRESS - SECT_ADDRESS
     uint32_t rxbuffer[READ_WRITE_LEN] = {0};
 
     // Read whole sector containing the desired START_ADDRESS

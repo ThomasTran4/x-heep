@@ -361,10 +361,12 @@ void R_GenerateInit(int texture_storage_size)
     generate_to_flash = X_ButtonState(1);
     */
 
-    generate_to_flash = true; 
+    generate_to_flash = false ; 
 
     generate_buffer = (byte*)I_VideoBuffers;
-    store_loc = X_spi_alloc_sector();
+    //store_loc = X_spi_alloc_sector();
+    store_loc = 0x900000;
+    
     PRINTF("R_GenerateInit: %d %d\n", store_loc, generate_to_flash);
     
     
@@ -372,7 +374,7 @@ void R_GenerateInit(int texture_storage_size)
         if (generate_to_flash) {
             X_spi_erase_sector(store_loc+ofs);
         }
-        X_spi_alloc_sector();
+        //X_spi_alloc_sector();
     } 
     
 }
@@ -395,9 +397,17 @@ void R_GenerateComposite_N (int num, texture_t *texture, char *patch_names)
     maptexture_t *mtex = texture->wad_texture;
 
     size_t texture_loc = store_loc;
-    store_loc += texture_size;
+    if (texture_size%4096 == 0)
+    {
+        store_loc += texture_size;
+    }
+    else 
+    {
+        store_loc+= (texture_size + 4096 - texture_size%4096); 
+    }
 
-    texture->composite = WAD_START_ADDRESS + texture_loc;//N_qspi_data_pointer(texture_loc);
+    //texture->composite = WAD_START_ADDRESS + texture_loc; N_qspi_data_pointer(texture_loc);
+    texture->composite = texture_loc;
 
     for (int i=0; i<texture_size; i++) {
         // NRFD-TODO: Verify that textures don't have 251 in them
@@ -478,7 +488,6 @@ void R_GenerateComposite_N (int num, texture_t *texture, char *patch_names)
             column_t* col_ptr = firstcol;
             column_t temp_column_t; 
             uint32_t temp_column_data;
-            uint32_t temp_source_data;
             X_spi_read(col_ptr, &temp_column_data, 1);  
             memcpy(&temp_column_t, &temp_column_data, sizeof(column_t));  // Copy only 2 bytes 
             while (temp_column_t.topdelta != 0xff)
@@ -499,9 +508,10 @@ void R_GenerateComposite_N (int num, texture_t *texture, char *patch_names)
 
 
                 if (count > 0) {
-                    X_spi_read(source, &temp_source_data, 1);
-                    byte source_temp = (uint8_t)temp_source_data; 
-                    memcpy (dest_col + position, &source_temp, count);
+                    byte temp_source_data[(count + 3)];
+                    X_spi_read(source, &temp_source_data, (count + 3)/4);
+                    //byte source_temp = (uint8_t)temp_source_data; 
+                    memcpy (dest_col + position, temp_source_data, count);
                 }
                 
                 col_ptr = (column_t *)((byte*)(col_ptr)  + col_length + 4);
@@ -516,7 +526,19 @@ void R_GenerateComposite_N (int num, texture_t *texture, char *patch_names)
         N_qspi_write(texture_loc, generate_buffer, texture_size);
         */
        X_spi_write(texture_loc, generate_buffer, texture_size);
+      
+       /*
+       uint32_t rxbuffer[16] = {0};
+
+       X_spi_read(texture_loc, rxbuffer, 16); 
+
+       for(int i = 0; i < 16; i++)
+       {
+            PRINTF("0x%08X:  %08X  %08X\n", texture_loc+4*i, generate_buffer[i], rxbuffer[i]);
+       }
+        */
        
+
     }
 }
 

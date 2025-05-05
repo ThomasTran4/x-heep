@@ -150,7 +150,7 @@ void R_DrawTransColumn (void)
     byte tempval;
     uint32_t temp_val_data;
     X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
-    memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes  
+    memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 2 bytes  
     do 
     {
         // Re-map color indices from wall texture column
@@ -165,7 +165,7 @@ void R_DrawTransColumn (void)
         dest += SCREENWIDTH; 
         frac += fracstep;
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
-        memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
+        memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 2 bytes 
         
     } while (count--); 
 } 
@@ -218,7 +218,7 @@ void R_DrawColumn (void)
     byte tempval;
     uint32_t temp_val_data;
     X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
-    memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
+    memcpy(&tempval, &temp_val_data, sizeof(tempval));  
     do 
     {
         // Re-map color indices from wall texture column
@@ -229,7 +229,7 @@ void R_DrawColumn (void)
         dest += SCREENWIDTH; 
         frac += fracstep;
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
-        memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
+        memcpy(&tempval, &temp_val_data, sizeof(tempval));  
         
     } while (count--); 
 } 
