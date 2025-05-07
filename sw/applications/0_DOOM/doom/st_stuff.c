@@ -1077,7 +1077,6 @@ void ST_doRefresh(void)
     ST_drawWidgets(true);
 
     //X_Display_Draw_Screen_200x200(); //debug 
-
 }
 
 void ST_diffDraw(void)

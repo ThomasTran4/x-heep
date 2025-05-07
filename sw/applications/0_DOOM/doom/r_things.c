@@ -492,6 +492,9 @@ R_DrawVisSprite
 {
     // N_ldbg("R_DrawVisSprite\n");
 
+    //x1/=2;
+    //x2 /=2; 
+
     column_t*           column; // X-HEEP comment : column is an adress in flash it must be read using X_spi_read
     int                 texturecolumn;
     fixed_t             frac;
@@ -538,13 +541,15 @@ R_DrawVisSprite
     spryscale = vis->scale;
     sprtopscreen = centeryfrac - FixedMul(dc_texturemid,spryscale);
         
-    for (dc_x=vis->x1 ; dc_x<=vis->x2 ; dc_x++, frac += vis->xiscale)
+    for (dc_x=x1 ; dc_x<=x2 ; dc_x++, frac += vis->xiscale)
     {
         texturecolumn = frac>>FRACBITS;
+        
 #ifdef RANGECHECK
         if (texturecolumn < 0 || texturecolumn >= w)
             I_Error ("R_DrawSpriteRange: bad texturecolumn");
 #endif
+
         column = (column_t *) ((byte *)patch +
                                LONG(full_patch->columnofs[texturecolumn]));
         R_DrawMaskedColumn (column);

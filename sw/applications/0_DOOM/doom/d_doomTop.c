@@ -275,7 +275,6 @@ void D_Display (void)
         PRINTF("In D_Display before R_RenderPlayerView\n");
         R_RenderPlayerView (&players[displayplayer]);
     }    
-    
 
     if (gamestate == GS_LEVEL && gametic)
     {
@@ -569,8 +568,8 @@ void D_DoomLoop (void)
         if (!startedGame)
         {
             startedGame = true;
-            //G_DeferedInitNew(1, 1, 1);
-            D_AdvanceDemo(); 
+            G_DeferedInitNew(1, 1, 1);
+            //D_AdvanceDemo(); 
         }
         #endif
 

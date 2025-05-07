@@ -100,7 +100,7 @@ int                     dccount;
 
 pixel_t *ylookup(int y)
 {
-    return I_VideoBuffer + (y+viewwindowy)*SCREENWIDTH; 
+    return I_VideoBuffer + (y+viewwindowy)*SCREENWIDTH_PHYSICAL; 
 }
 
 int columnofs(int x)
@@ -184,18 +184,22 @@ void R_DrawColumn (void)
     fixed_t             frac;
     fixed_t             fracstep;        
 
-    count = (dc_yh - dc_yl); 
+    int temp_dc_yh = dc_yh/2;
+    int temp_dc_yl = dc_yl/2;
+    int temp_dc_x = dc_x/2;  
+
+    count = (temp_dc_yh - temp_dc_yl); 
 
     // Zero length, column does not exceed a pixel.
     if (count < 0) 
         return; 
                                  
 #ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-        || dc_yl < 0
-        || dc_yh >= SCREENHEIGHT) {
+    if ((unsigned)temp_dc_x >= SCREENWIDTH_PHYSICAL
+        || temp_dc_yl < 0
+        || temp_dc_yh >= SCREENHEIGHT_PHYSICAL) {
         // NRFD-TODO: I_Error 
-        PRINTF ("R_DrawColumn: %i to %i at %i\n", dc_yl, dc_yh, dc_x);
+        PRINTF ("R_DrawColumn: %i to %i at %i\n", temp_dc_yl, temp_dc_yh, temp_dc_x);
         return;
     }
 #endif 
@@ -204,13 +208,13 @@ void R_DrawColumn (void)
     // Use ylookup LUT to avoid multiply with ScreenWidth.
     // Use columnofs LUT for subwindows? 
     
-    dest = ylookup(dc_yl) + columnofs(dc_x); 
+    dest = ylookup(temp_dc_yl) + columnofs(temp_dc_x); 
 
 
     // Determine scaling,
     //  which is the only mapping to be done.
     fracstep = dc_iscale; 
-    frac = dc_texturemid + (dc_yl-centery)*fracstep; 
+    frac = dc_texturemid + (temp_dc_yl-centery)*fracstep; 
 
     // Inner loop that does the actual texture mapping,
     //  e.g. a DDA-lile scaling.
@@ -226,8 +230,8 @@ void R_DrawColumn (void)
         X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
         *dest = (uint8_t)temp_val_data;
         
-        dest += SCREENWIDTH; 
-        frac += fracstep;
+        dest += SCREENWIDTH_PHYSICAL; 
+        frac += 2*fracstep;
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
         memcpy(&tempval, &temp_val_data, sizeof(tempval));  
         
@@ -384,34 +388,39 @@ void R_DrawFuzzColumn (void)
     fixed_t             frac;
     fixed_t             fracstep;        
 
+    
+    int temp_dc_yh = dc_yh/2;
+    int temp_dc_yl = dc_yl/2;
+    int temp_dc_x = dc_x/2;   
+
     // Adjust borders. Low... 
-    if (!dc_yl) 
-        dc_yl = 1;
+    if (!temp_dc_yl) 
+        temp_dc_yl = 1;
 
     // .. and high.
-    if (dc_yh == viewheight-1) 
-        dc_yh = viewheight - 2; 
+    if (temp_dc_yh == viewheight-1) 
+        temp_dc_yh = viewheight - 2; 
                  
-    count = (dc_yh - dc_yl); 
+    count = (temp_dc_yh - temp_dc_yl); 
 
     // Zero length.
     if (count < 0) 
         return; 
 
 #ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-        || dc_yl < 0 || dc_yh >= SCREENHEIGHT)
+    if ((unsigned)temp_dc_x >= SCREENWIDTH_PHYSICAL
+        || temp_dc_yl < 0 || temp_dc_yh >= SCREENHEIGHT_PHYSICAL)
     {
         I_Error ("R_DrawFuzzColumn: %i to %i at %i",
-                 dc_yl, dc_yh, dc_x);
+                 temp_dc_yl, temp_dc_yh, temp_dc_x);
     }
 #endif
     
-    dest = ylookup(dc_yl) + columnofs(dc_x);
+    dest = ylookup(temp_dc_yl) + columnofs(temp_dc_x);
 
     // Looks familiar.
     fracstep = dc_iscale; 
-    frac = dc_texturemid + (dc_yl-centery)*fracstep; 
+    frac = dc_texturemid + (temp_dc_yl-centery)*fracstep; 
 
     // Looks like an attempt at dithering,
     //  using the colormap #6 (of 0-31, a bit
@@ -430,9 +439,9 @@ void R_DrawFuzzColumn (void)
         if (++fuzzpos == FUZZTABLE) 
             fuzzpos = 0;
         
-        dest += SCREENWIDTH;
+        dest += SCREENWIDTH_PHYSICAL;
 
-        frac += fracstep; 
+        frac += 2*fracstep; 
     } while (count--); 
 } 
 
@@ -580,27 +589,31 @@ void R_DrawTranslatedColumn (void)
     fixed_t             frac;
     fixed_t             fracstep;        
  
-    count = (dc_yh - dc_yl); 
+    int temp_dc_yh = dc_yh/2;
+    int temp_dc_yl = dc_yl/2;
+    int temp_dc_x = dc_x/2;  
+
+    count = (temp_dc_yh - temp_dc_yl); 
     if (count <  0) 
         return; 
                                  
 #ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-        || dc_yl < 0
-        || dc_yh >= SCREENHEIGHT)
+    if ((unsigned)temp_dc_x >= SCREENWIDTH_PHYSICAL
+        || temp_dc_yl < 0
+        || temp_dc_yh >= SCREENHEIGHT_PHYSICAL)
     {
         I_Error ( "R_DrawColumn: %i to %i at %i",
-                  dc_yl, dc_yh, dc_x);
+                  temp_dc_yl, temp_dc_yh, temp_dc_x);
     }
     
 #endif 
 
 
-    dest = ylookup(dc_yl) + columnofs(dc_x); 
+    dest = ylookup(temp_dc_yl) + columnofs(temp_dc_x); 
 
     // Looks familiar.
     fracstep = dc_iscale; 
-    frac = dc_texturemid + (dc_yl-centery)*fracstep; 
+    frac = dc_texturemid + (temp_dc_yl-centery)*fracstep; 
 
     byte tempval;
     uint32_t temp_val_data;
@@ -617,9 +630,9 @@ void R_DrawTranslatedColumn (void)
         //  is mapped to gray, red, black/indigo.
         X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
         *dest = (uint8_t)temp_val_data;
-        dest += SCREENWIDTH;
+        dest += SCREENWIDTH_PHYSICAL;
         
-        frac += fracstep; 
+        frac += 2*fracstep; 
         X_spi_read(dc_source + (frac>>FRACBITS), &temp_val_data, 1);  
         memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 1 bytes 
     } while (count--); 
@@ -770,14 +783,18 @@ void R_DrawSpan (void)
     int spot;
     unsigned int xtemp, ytemp;
 
+    int temp_ds_x2 = ds_x2/2; 
+    int temp_ds_x1 = ds_x1/2; 
+    int temp_ds_y = ds_y/2; 
+
 #ifdef RANGECHECK
-    if (ds_x2 < ds_x1
-        || ds_x1<0
-        || ds_x2>=SCREENWIDTH
-        || (unsigned)ds_y>SCREENHEIGHT)
+    if (temp_ds_x2 < temp_ds_x1
+        || temp_ds_x1<0
+        || temp_ds_x2>=SCREENWIDTH_PHYSICAL
+        || (unsigned)temp_ds_y>SCREENHEIGHT_PHYSICAL)
     {
         printf( "R_DrawSpan: %i to %i at %i",
-                 ds_x1,ds_x2,ds_y);
+                 temp_ds_x1,temp_ds_x2,temp_ds_y);
     }
 
 //      dscount++;
@@ -794,10 +811,10 @@ void R_DrawSpan (void)
          | ((ds_ystep >> 6)  & 0x0000ffff);
 
     //printf("R_DrawSpan before dest calc\n");
-    dest = ylookup(ds_y) + columnofs(ds_x1);
+    dest = ylookup(temp_ds_y) + columnofs(temp_ds_x1);
 
     // We do not check for zero spans here?
-    count = (ds_x2 - ds_x1);
+    count = (temp_ds_x2 - temp_ds_x1);
 
     uint32_t temp_data; 
 
@@ -814,7 +831,7 @@ void R_DrawSpan (void)
         X_spi_read(ds_colormap + ((temp_data >> 0)  & 0xFF), &temp_data, 1); 
         *dest++ = (uint8_t)temp_data;
 
-        position += step;
+        position += 2*step;
 
     } while (count--);
 }

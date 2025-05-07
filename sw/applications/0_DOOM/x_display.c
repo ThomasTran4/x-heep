@@ -84,12 +84,46 @@ void X_Display_Draw_Screen_200x200(void)
         
         for (int j = 0; j < 240; j++)
         {
-            int src_x = (j * 320) / 240;
-            int src_y = (i * 200) / 240;
-            color = I_VideoBuffer[src_y*320+src_x];
+            int src_x = (j * SCREENWIDTH_PHYSICAL) / 240;
+            int src_y = (i * SCREENHEIGHT_PHYSICAL) / 240;
+            color = I_VideoBuffer[src_y*SCREENWIDTH_PHYSICAL+src_x];
 
             rgb565 = I_GetRGB565FromPaletteIndex(color);
             ST7789_spi_write_data_2B(rgb565);
         }
     }
+}
+
+void X_Display_Draw_Screen_Debug(void)
+{
+
+    ST7789_set_adress_window(0, 0, 240, 240);
+
+
+    //Code from X_Display_Fill_ST7789_Buffer
+    // at the moment the game is hardcoded for a 320*200 screen
+    // the screen buffer has uint8_t colors that need to be translated from palette
+    // to RGB565
+    uint16_t rgb565 = 0;
+    uint8_t color;
+    //fill the ST7789 Screen Buffer
+
+    for (int i = 0; i < 240; i++)
+    {
+
+        //if (i >= 240) { continue; }
+       
+        
+        for (int j = 0; j < 240; j++)
+        {
+            int src_x = (j * SCREENWIDTH) / 240;
+            int src_y = (i * SCREENHEIGHT) / 240;
+            color = I_VideoBuffer[src_y*SCREENWIDTH+src_x];
+
+            rgb565 = I_GetRGB565FromPaletteIndex(color);
+            ST7789_spi_write_data_2B(rgb565);
+        }
+    }
+
+    while(true); 
 }

@@ -1225,6 +1225,7 @@ void R_RenderPlayerView (player_t* player)
     PRINTF("finish\n");
 
     //X_Display_Draw_Screen_200x200(); //debug 
+    
 
     // Check for new console commands.
     NetUpdate ();
@@ -1243,6 +1244,7 @@ void R_RenderPlayerView (player_t* player)
     PRINTF("finish\n");
 
     //X_Display_Draw_Screen_200x200();
+    //X_Display_Draw_Screen_Debug(); 
 
     // Check for new console commands.
     NetUpdate ();                               
