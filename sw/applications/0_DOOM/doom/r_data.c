@@ -361,11 +361,11 @@ void R_GenerateInit(int texture_storage_size)
     generate_to_flash = X_ButtonState(1);
     */
 
-    generate_to_flash = false ; 
+    generate_to_flash = true; 
 
     generate_buffer = (byte*)I_VideoBuffers;
-    //store_loc = X_spi_alloc_sector();
-    store_loc = 0x900000;
+    store_loc = X_spi_alloc_sector();
+    //store_loc = 0x900000;
     
     PRINTF("R_GenerateInit: %d %d\n", store_loc, generate_to_flash);
     
@@ -374,7 +374,7 @@ void R_GenerateInit(int texture_storage_size)
         if (generate_to_flash) {
             X_spi_erase_sector(store_loc+ofs);
         }
-        //X_spi_alloc_sector();
+        X_spi_alloc_sector();
     } 
     
 }
