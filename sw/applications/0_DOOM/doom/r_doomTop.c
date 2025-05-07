@@ -1243,8 +1243,7 @@ void R_RenderPlayerView (player_t* player)
     R_DrawMasked ();
     PRINTF("finish\n");
 
-    //X_Display_Draw_Screen_200x200();
-    //X_Display_Draw_Screen_Debug(); 
+    //X_Display_Draw_Screen_200x200(); 
 
     // Check for new console commands.
     NetUpdate ();                               
