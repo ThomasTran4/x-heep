@@ -299,6 +299,9 @@ R_FindPlane
     check->maxx = -1;
 
     memset (check->top,0xff,sizeof(check->top));
+
+    //MODIF
+    check->modified = 0;
                 
     return check;
 }
@@ -365,6 +368,7 @@ R_CheckPlane
     pl->maxx = stop;
 
     memset (pl->top,0xff,sizeof(pl->top));
+    pl->modified = 0;
                 
     return pl;
 }
@@ -443,6 +447,10 @@ void R_DrawPlanes (void)
 
     for (pl = visplanes ; pl < lastvisplane ; pl++)
     {
+        //MODIF
+        if (!pl->modified)
+            continue;
+
         if (pl->minx > pl->maxx)
             continue;
 

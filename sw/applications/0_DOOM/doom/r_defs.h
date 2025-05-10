@@ -501,6 +501,9 @@ typedef struct  __attribute__((packed))
   short           lightlevel;
   short           minx;
   short           maxx;
+
+  //MODIF
+  byte modified;
   
   // leave pads for [minx-1]/[maxx+1]
   
