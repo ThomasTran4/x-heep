@@ -361,7 +361,7 @@ void R_GenerateInit(int texture_storage_size)
     generate_to_flash = X_ButtonState(1);
     */
 
-    generate_to_flash = true; 
+    generate_to_flash = false; 
 
     generate_buffer = (byte*)I_VideoBuffers; //X-HEEP note : this is not safe since I_VideoBuffers is now 160*100 (it seems to work for now)
     store_loc = X_spi_alloc_sector();

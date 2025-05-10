@@ -445,11 +445,13 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     {
         // fprintf(stderr, "%s\n", );(stderr, "up\n");
         forward += forwardmove[speed];
+        printf("FORWARD");
     }
     if (gamekeydown(key_down))
     {
         // fprintf(stderr, "down\n");
         forward -= forwardmove[speed];
+        printf("BACKWARD");
     }
 
     if (joyymove != 0) {
@@ -515,6 +517,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
 
             if (gamekeydown(key))
             {
+                
                 cmd->buttons |= BT_CHANGE;
                 cmd->buttons |= i<<BT_WEAPONSHIFT;
                 break;

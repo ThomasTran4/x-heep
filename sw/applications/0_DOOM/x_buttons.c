@@ -92,8 +92,8 @@ static void x_button_common_handler(int idx)
     D_PostEvent(&event);
 
     // Immediately send KeyUp event
-    event.type = ev_keyup;
-    D_PostEvent(&event);
+    //event.type = ev_keyup;
+    //D_PostEvent(&event);
 
     printf("Button %d pressed (rising edge)\n", idx);
 }
