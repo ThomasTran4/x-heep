@@ -32,6 +32,7 @@
 #include "r_local.h"
 #include "r_sky.h"
 #include "x_spi.h"
+#include "x_lrucache.h"
 
 
 
@@ -480,7 +481,9 @@ void R_DrawPlanes (void)
         
         // regular flat
         lumpnum = firstflat + flattranslation[pl->picnum];
-        ds_source = W_CacheLumpNum(lumpnum, PU_STATIC);
+        printf("lumpnum %i\n", lumpnum); 
+        ds_source = X_cache_read(W_CacheLumpNum(lumpnum, PU_STATIC), W_LumpLength(lumpnum)); 
+        //ds_source = W_CacheLumpNum(lumpnum, PU_STATIC);
         
         //printf("In R_DrawPlanes before abs\n"); 
         planeheight = abs(pl->height-viewz);

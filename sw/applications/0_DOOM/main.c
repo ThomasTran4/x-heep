@@ -47,7 +47,7 @@
 
 #include "x_buttons.h"
 #include "d_doomTop.h"
-#include "x_cache.h"
+#include "x_lrucache.h"
 /*
 #include "nrf.h"
 
@@ -170,12 +170,12 @@ int main(int argc, char *argv[])
 
     X_ButtonsInit();
     X_init_spi();
+
+    cache_init(21*1024); 
     
     //N_I2S_init();
 
-    //M_ArgvInit();
-    
-    cache_init(2048); //X-HEEP comment : increase this number when you have more space 
+    //M_ArgvInit(); 
 
     D_DoomMain();
 

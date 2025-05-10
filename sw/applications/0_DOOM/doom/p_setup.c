@@ -1280,7 +1280,7 @@ P_SetupLevel
 
     // preload graphics
     if (precache)
-        R_PrecacheLevel (); //X-HEEP TODO : cache as many flats and textures 
+        R_PrecacheLevel ();  
 
     //PRINTF ("free memory: 0x%x\n", Z_FreeMemory());
 

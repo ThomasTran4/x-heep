@@ -807,11 +807,11 @@ void R_DrawSpan (void)
         ytemp = (position >> 4) & 0x0fc0;
         xtemp = (position >> 26);
         spot = xtemp | ytemp;
-        X_spi_read(ds_source + spot, &temp_data, 1);
+        //X_spi_read(ds_source + spot, &temp_data, 1);
 
         // Lookup pixel from flat texture tile,
         //  re-index using light/colormap.
-        X_spi_read(ds_colormap + ((temp_data >> 0)  & 0xFF), &temp_data, 1); 
+        X_spi_read(ds_colormap + ds_source[spot], &temp_data, 1); 
         *dest++ = (uint8_t)temp_data;
 
         position += step;

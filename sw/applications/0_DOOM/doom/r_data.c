@@ -45,6 +45,7 @@
 
 #include "x_buttons.h"
 #include "x_spi.h"
+#include "x_texcache.h"
 
 // NRFD-TODO: Check values for all supported games
 #define MAX_TEXTURES 125
@@ -361,7 +362,7 @@ void R_GenerateInit(int texture_storage_size)
     generate_to_flash = X_ButtonState(1);
     */
 
-    generate_to_flash = true; 
+    generate_to_flash = false; 
 
     generate_buffer = (byte*)I_VideoBuffers;
     store_loc = X_spi_alloc_sector();
@@ -1252,7 +1253,52 @@ int             spritememory;
 
 void R_PrecacheLevel (void)
 {
-    PRINTF("NRF-TODO: R_PrecacheLevel\n");
+    PRINTF("R_PrecacheLevel\n");
+
+    char*           flatpresent;
+    int             lump;
+
+    texcache_init(16*1024); 
+
+    // Precache flats.
+    flatpresent = Z_Malloc(numflats, PU_STATIC, NULL);
+    memset (flatpresent,0,numflats);  
+
+    for (int i=0 ; i<numsectors ; i++)
+    {
+        flatpresent[sectors[i].floorpic] = 1;
+        flatpresent[sectors[i].ceilingpic] = 1;
+    }
+
+    int used_flat_count = 0;
+
+    for (int i = 0; i < numflats; i++)
+    {
+        if (flatpresent[i])
+            used_flat_count++;
+    }
+
+    PRINTF("Number of unique flats used in level: %i\n", used_flat_count);
+
+    flatmemory = 0;
+
+    for (int i=0 ; i<numflats ; i++)
+    {
+        if (flatpresent[i])
+        {
+            lump = firstflat + i;
+            if(X_texcache_write(W_CacheLumpNum(lump, PU_CACHE), W_LumpLength(lump)) == 0)
+            {
+                printf("Could not store any more flats\n"); 
+                return; 
+            }  
+        }
+    }
+
+    Z_Free(flatpresent);
+
+    printf("Cached all flats ! \n"); 
+
     /*
     char*           flatpresent;
     char*           texturepresent;

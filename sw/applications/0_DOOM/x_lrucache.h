@@ -1,5 +1,5 @@
-#ifndef X_CACHE_H
-#define X_CACHE_H
+#ifndef X_LRUCACHE_H
+#define X_LRUCACHE_H
 
 #include <stdint.h>
 #include <stdio.h>
@@ -11,4 +11,4 @@ void cache_free();
 
 void *X_cache_read(uint32_t flash_addr, uint32_t len); 
 
-#endif // X_CACHE_H
+#endif // X_LRUCACHE_H
