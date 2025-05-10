@@ -37,6 +37,7 @@
 #include "doomstat.h"
 
 #include"x_spi.h"
+#include "x_lrucache.h"
 
 
 // ?
@@ -223,9 +224,13 @@ void R_DrawColumn (void)
     {
         // Re-map color indices from wall texture column
         //  using a lighting/special effects LUT.
+        /*
         X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
         *dest = (uint8_t)temp_val_data;
-        
+        */
+
+        *dest = dc_colormap[tempval]; 
+
         dest += SCREENWIDTH; 
         frac += fracstep;
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
@@ -423,9 +428,12 @@ void R_DrawFuzzColumn (void)
         //  a pixel that is either one column
         //  left or right of the current one.
         // Add index from colormap to index.
+        /*
         X_spi_read(dc_colormap + (6*256+dest[fuzzoffset[fuzzpos]]), &temp_val_data, 1); 
         *dest = (uint8_t)temp_val_data; 
+        */
 
+        *dest = dc_colormap[6*256+dest[fuzzoffset[fuzzpos]]]; 
         // Clamp table lookup index.
         if (++fuzzpos == FUZZTABLE) 
             fuzzpos = 0;
@@ -615,8 +623,12 @@ void R_DrawTranslatedColumn (void)
         //  used with PLAY sprites.
         // Thus the "green" ramp of the player 0 sprite
         //  is mapped to gray, red, black/indigo.
+        /*
         X_spi_read(dc_colormap + tempval, &temp_val_data, 1); 
         *dest = (uint8_t)temp_val_data;
+        */
+
+        *dest = dc_colormap[tempval]; 
         dest += SCREENWIDTH;
         
         frac += fracstep; 
@@ -811,9 +823,20 @@ void R_DrawSpan (void)
 
         // Lookup pixel from flat texture tile,
         //  re-index using light/colormap.
+        /*
         X_spi_read(ds_colormap + ds_source[spot], &temp_data, 1); 
         *dest++ = (uint8_t)temp_data;
+        */
 
+        if (get_cache_initialized())
+        {
+            *dest++ = ds_colormap[ds_source[spot]];
+        } 
+        else 
+        {
+            X_spi_read(ds_source + spot, &temp_data, 1);
+            *dest++ = ds_colormap[(temp_data >> 0)  & 0xFF];
+        }
         position += step;
 
     } while (count--);

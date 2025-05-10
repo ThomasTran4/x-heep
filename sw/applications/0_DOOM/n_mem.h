@@ -33,3 +33,4 @@
 
 void *N_malloc(size_t size);
 void N_free(void *ptr, size_t size); 
+int get_heap_left();

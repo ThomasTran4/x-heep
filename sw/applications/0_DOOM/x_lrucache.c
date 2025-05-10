@@ -40,6 +40,7 @@ typedef struct {
 /****************************************************************************/
 
 cache_t my_cache;
+uint8_t cache_initialized; 
 
 /****************************************************************************/
 /**                                                                        **/
@@ -83,6 +84,7 @@ void cache_init(size_t cache_size) {
     my_cache.used = 0;
     my_cache.lru_head = NULL;
     my_cache.lru_tail = NULL;
+    cache_initialized = 1; 
 }
 
 // Free all cache entries.
@@ -100,6 +102,12 @@ void cache_free() {
     my_cache.lru_head = NULL;
     my_cache.lru_tail = NULL;
     my_cache.used = 0;
+    cache_initialized = 0; 
+}
+
+uint8_t get_cache_initialized()
+{
+    return cache_initialized; 
 }
 
 // Reads `len` bytes from the flash address using the cache.
@@ -111,6 +119,10 @@ void *X_cache_read(uint32_t flash_addr, uint32_t len)
     {   
         if (len +  sizeof(cache_entry_t) <= my_cache.cache_size && len != 0)
         { 
+            cache_evict(&my_cache, len+sizeof(cache_entry_t));
+            if (my_cache.used + len + sizeof(cache_entry_t) > my_cache.cache_size)
+                return NULL;
+
             void *buffer = N_malloc(len);
             if (len%4 == 0)
             {
@@ -130,7 +142,7 @@ void *X_cache_read(uint32_t flash_addr, uint32_t len)
                 N_free(buffer, len);
                 return NULL;
             }
-            printf("Cache miss :(\n");
+            //printf("Cache miss :(\n");
             return buffer; 
         }
         else
@@ -139,7 +151,7 @@ void *X_cache_read(uint32_t flash_addr, uint32_t len)
             return NULL;
         }
     }
-    printf("Cache hit !\n"); 
+    //printf("Cache hit !\n"); 
     return cached_data;
 }
 
@@ -220,10 +232,6 @@ static void cache_evict(cache_t *cache, size_t needed) {
 }
 
 static int cache_put(cache_t *cache, uintptr_t addr, void *data, size_t size) {
-    cache_evict(cache, size);
-    if (cache->used + size + sizeof(cache_entry_t) > cache->cache_size)
-        return -1;
-
     unsigned int hash = hash_function_addr(addr) % HASH_TABLE_SIZE;
     cache_entry_t *entry = N_malloc(sizeof(cache_entry_t));
     if (!entry)

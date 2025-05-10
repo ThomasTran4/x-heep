@@ -41,6 +41,7 @@
 #include "doomstat.h"
 #include "x_spi.h"
 #include "n_mem.h"
+#include "x_lrucache.h"
 
 
 void    P_SpawnMapThing (mapthing_t*    mthing);
@@ -1171,11 +1172,16 @@ void P_FreeLevelData()
 {
     PRINTF("P_FreeLevelData\n");
 
+    Z_FreeTags (PU_LEVEL, PU_PURGELEVEL-1);
+    cache_free(); 
+
+    /*
     N_free(sectors, numsectors*sizeof(sector_t)); 
     N_free(sides ,numsides*sizeof(side_t)); 
     N_free(lines, numlines*sizeof(line_t));
     N_free(subsectors, numsubsectors*sizeof(subsector_t)); 
-    N_free(linebuffer, totallines*sizeof(line_t *));  
+    N_free(linebuffer, totallines*sizeof(line_t *));
+    */  
 }
 
 
@@ -1209,9 +1215,8 @@ P_SetupLevel
 
     // Make sure all sounds are stopped before Z_FreeTags.
     //S_Start ();                 
-
-    Z_FreeTags (PU_LEVEL, PU_PURGELEVEL-1); //X-HEEP comment need to uncoment or replace if mallocs left 
-    //P_FreeLevelData(); not used any more 
+ 
+    P_FreeLevelData(); 
 
     // UNUSED W_Profile ();
     P_InitThinkers ();
@@ -1274,14 +1279,23 @@ P_SetupLevel
     
     // set up world state
     P_SpawnSpecials ();
-        
+
+    int heap_size = get_heap_left(); 
+
+    if (heap_size > 2*(4096 + 24))
+    {
+        int n = heap_size/(4096+24); 
+        cache_init(n*(4096+24)); 
+    } 
+     
     // build subsector connect matrix
     //  UNUSED P_ConnectSubsectors ();
 
+    /*
     // preload graphics
     if (precache)
         R_PrecacheLevel ();  
-
+    */
     //PRINTF ("free memory: 0x%x\n", Z_FreeMemory());
 
 }

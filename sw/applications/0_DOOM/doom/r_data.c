@@ -191,7 +191,7 @@ short*                  texturetranslation;
 // fixed_t*              spriteoffset;
 // fixed_t*              spritetopoffset;
 
-lighttable_t*         colormaps; //This is an adress in flash, must be read using X_spi_read()
+lighttable_t*         colormaps; 
 
 
 //
@@ -1112,16 +1112,13 @@ void R_InitColormaps (void)
     //  256 byte align tables.
     lump = W_GetNumForName(DEH_String("COLORMAP"));
 
-    colormaps = W_CacheLumpNum(lump, PU_STATIC);
+    //colormaps = W_CacheLumpNum(lump, PU_STATIC);
 
     int length = W_LumpLength(lump);
     PRINTF("R_InitColormaps: length = %d\n", length);
-
-    //X-HEEP comment 
-    /*
+    
     colormaps = Z_Malloc(length, PU_STATIC, 0);
     W_ReadLump(lump, colormaps);
-    */
 }
 
 

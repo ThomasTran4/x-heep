@@ -47,7 +47,6 @@
 
 #include "x_buttons.h"
 #include "d_doomTop.h"
-#include "x_lrucache.h"
 /*
 #include "nrf.h"
 
@@ -169,9 +168,7 @@ int main(int argc, char *argv[])
     */
 
     X_ButtonsInit();
-    X_init_spi();
-
-    cache_init(21*1024); 
+    X_init_spi(); 
     
     //N_I2S_init();
 
