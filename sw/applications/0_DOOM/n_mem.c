@@ -34,7 +34,7 @@
  #include <stdio.h>
  #include <stdlib.h>
 
- #define X_HEEP_HEAP_LIMIT 0xC000  // 48 KiB
+ #define X_HEEP_HEAP_LIMIT 0xB798  
  static size_t heap_used = 0;
  
  void *N_malloc(size_t size)
@@ -59,4 +59,9 @@ void N_free(void *ptr, size_t size)
         heap_used -= size;
         PRINTF("free %d -> %p (heap used: %lu/%d)\n", size, ptr, heap_used, X_HEEP_HEAP_LIMIT);
     }
+}
+
+int get_heap_left()
+{
+    return X_HEEP_HEAP_LIMIT - heap_used; 
 }

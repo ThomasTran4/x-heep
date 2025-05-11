@@ -1,5 +1,6 @@
 #include "x_spi.h"
-#include "x_cache.h"
+#include "n_mem.h"
+#include "x_lrucache.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -11,6 +12,7 @@
 #define HASH_TABLE_SIZE 16
 
 // Cache entry structure, with pointers for a doubly-linked LRU list.
+//24 bytes 
 typedef struct cache_entry {
     uintptr_t key;              // Unique identifier 
     void *data;             // Pointer to the cached data (allocated dynamically)
@@ -38,6 +40,7 @@ typedef struct {
 /****************************************************************************/
 
 cache_t my_cache;
+uint8_t cache_initialized; 
 
 /****************************************************************************/
 /**                                                                        **/
@@ -58,14 +61,14 @@ static void lru_move_to_head(cache_t *cache, cache_entry_t *entry);
 
 // Lookup a cache entry by key.
 // If found, move the entry to the head of the LRU list and return the data.
-void *cache_get(cache_t *cache, uintptr_t addr); 
+static void *cache_get(cache_t *cache, uintptr_t addr); 
 
 // Evict entries from the cache (starting from the LRU tail) until at least "needed" bytes are free.
 static void cache_evict(cache_t *cache, size_t needed); 
 
 // Insert a new entry into the cache.
 // On success, the entry is added to the hash table and LRU list.
-int cache_put(cache_t *cache, uintptr_t addr, void *data, size_t size); 
+static int cache_put(cache_t *cache, uintptr_t addr, void *data, size_t size); 
 
 
 /****************************************************************************/
@@ -81,6 +84,7 @@ void cache_init(size_t cache_size) {
     my_cache.used = 0;
     my_cache.lru_head = NULL;
     my_cache.lru_tail = NULL;
+    cache_initialized = 1; 
 }
 
 // Free all cache entries.
@@ -89,8 +93,8 @@ void cache_free() {
         cache_entry_t *entry = my_cache.buckets[i];
         while (entry) {
             cache_entry_t *next = entry->next;
-            free(entry->data);
-            free(entry);
+            N_free(entry->data, entry->size);
+            N_free(entry, sizeof(cache_entry_t));
             entry = next;
         }
         my_cache.buckets[i] = NULL;
@@ -98,6 +102,12 @@ void cache_free() {
     my_cache.lru_head = NULL;
     my_cache.lru_tail = NULL;
     my_cache.used = 0;
+    cache_initialized = 0; 
+}
+
+uint8_t get_cache_initialized()
+{
+    return cache_initialized; 
 }
 
 // Reads `len` bytes from the flash address using the cache.
@@ -107,9 +117,13 @@ void *X_cache_read(uint32_t flash_addr, uint32_t len)
     void *cached_data = cache_get(&my_cache, flash_addr);
     if (cached_data == NULL)
     {   
-        if (len <= my_cache.cache_size && len != 0)
+        if (len +  sizeof(cache_entry_t) <= my_cache.cache_size && len != 0)
         { 
-            void *buffer = malloc(len);
+            cache_evict(&my_cache, len+sizeof(cache_entry_t));
+            if (my_cache.used + len + sizeof(cache_entry_t) > my_cache.cache_size)
+                return NULL;
+
+            void *buffer = N_malloc(len);
             if (len%4 == 0)
             {
                 X_spi_read(flash_addr, buffer, len/4);        
@@ -120,22 +134,24 @@ void *X_cache_read(uint32_t flash_addr, uint32_t len)
                 uint32_t raw_buffer[size];
                 X_spi_read(flash_addr, &raw_buffer, size); 
                 memcpy(buffer, &raw_buffer, len); 
-                cache_put(&my_cache, flash_addr, buffer, len); 
+                //cache_put(&my_cache, flash_addr, buffer, len); 
             }
             if (cache_put(&my_cache, flash_addr, buffer, len) != 0)
             {
-                //printf("Failed to insert data into cache.\n");
-                free(buffer);
+                printf("Failed to insert data into cache.\n");
+                N_free(buffer, len);
                 return NULL;
             }
+            //printf("Cache miss :(\n");
             return buffer; 
         }
         else
         {
-            //printf("Data length bigger than the cache size, failed to insert data into cache\n");
+            printf("Data length bigger than the cache size, failed to insert data into cache\n");
             return NULL;
         }
     }
+    //printf("Cache hit !\n"); 
     return cached_data;
 }
 
@@ -181,7 +197,7 @@ static void lru_move_to_head(cache_t *cache, cache_entry_t *entry) {
     lru_insert_head(cache, entry);
 }
 
-void *cache_get(cache_t *cache, uintptr_t addr) {
+static void *cache_get(cache_t *cache, uintptr_t addr) {
     unsigned int hash = hash_function_addr(addr) % HASH_TABLE_SIZE;
     cache_entry_t *entry = cache->buckets[hash];
     while (entry) {
@@ -208,20 +224,16 @@ static void cache_evict(cache_t *cache, size_t needed) {
         
         lru_remove(cache, evict);
         
-        cache->used -= evict->size;
+        cache->used -= (evict->size + sizeof(cache_entry_t));
     
-        free(evict->data);
-        free(evict);
+        N_free(evict->data, evict->size);
+        N_free(evict, sizeof(cache_entry_t));
     }
 }
 
-int cache_put(cache_t *cache, uintptr_t addr, void *data, size_t size) {
-    cache_evict(cache, size);
-    if (cache->used + size > cache->cache_size)
-        return -1;
-
+static int cache_put(cache_t *cache, uintptr_t addr, void *data, size_t size) {
     unsigned int hash = hash_function_addr(addr) % HASH_TABLE_SIZE;
-    cache_entry_t *entry = malloc(sizeof(cache_entry_t));
+    cache_entry_t *entry = N_malloc(sizeof(cache_entry_t));
     if (!entry)
         return -1;
 
@@ -232,8 +244,6 @@ int cache_put(cache_t *cache, uintptr_t addr, void *data, size_t size) {
     cache->buckets[hash] = entry;
 
     lru_insert_head(cache, entry);
-    cache->used += size;
+    cache->used += (size + sizeof(cache_entry_t));
     return 0;
 }
-
-
