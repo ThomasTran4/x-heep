@@ -165,13 +165,13 @@ static boolean BuildNewTic(void)
        // If playing single player, do not allow tics to buffer
        // up very far
 
-       if (!net_client_connected && maketic - gameticdiv > 2)
-           return false;
+       //if (!net_client_connected && maketic - gameticdiv > 2)
+           //return false;
 
        // Never go more than ~200ms ahead
 
-       if (maketic - gameticdiv > 8)
-           return false;
+       //if (maketic - gameticdiv > 8)
+           //return false;
     }
     else
     {
@@ -689,6 +689,7 @@ static void SinglePlayerClear(ticcmd_set_t *set)
 // TryRunTics
 //
 
+
 void TryRunTics (void)
 {
     int	i;
@@ -703,7 +704,6 @@ void TryRunTics (void)
     entertic = I_GetTime() / ticdup;
     realtics = entertic - oldentertics;
     oldentertics = entertic;
-     
 
     // in singletics mode, run a single tic every time this function
     // is called.
@@ -719,14 +719,13 @@ void TryRunTics (void)
 
     lowtic = GetLowTic();
 
-
     availabletics = lowtic - gametic/ticdup;
 
     // decide how many tics to run
 
     if (new_sync)
     {
-        counts = availabletics;
+	counts = availabletics;
     }
     else
     {
@@ -748,23 +747,17 @@ void TryRunTics (void)
     }
 
     if (counts < 1)
-        counts = 1;
+	counts = 1;
 
     // wait for new tics if needed
     while (!PlayersInGame() || lowtic < gametic/ticdup + counts)
     {
-
-        //printf("PlayersInGame :  %i\n", PlayersInGame());
-        //printf("lowtic : %i\n", lowtic);
-        //printf("gametic/ticdup : %i\n", gametic/ticdup); 
-        //printf("counts : %i\n", counts); 
-
-        NetUpdate ();
+	NetUpdate ();
 
         lowtic = GetLowTic();
 
-        if (lowtic < gametic/ticdup)
-            I_Error ("TryRunTics: lowtic < gametic");
+	if (lowtic < gametic/ticdup)
+	    I_Error ("TryRunTics: lowtic < gametic");
 
         // Still no tics to run? Sleep until some are available.
         if (lowtic < gametic/ticdup + counts)
@@ -780,7 +773,6 @@ void TryRunTics (void)
             I_Sleep(1);
         }
     }
-
 
     // run the count * ticdup dics
     while (counts--)
@@ -799,23 +791,22 @@ void TryRunTics (void)
             SinglePlayerClear(set);
         }
 
-        for (i=0 ; i<ticdup ; i++)
-        {
-
+	for (i=0 ; i<ticdup ; i++)
+	{
             if (gametic/ticdup > lowtic)
                 I_Error ("gametic>lowtic");
 
             memcpy(local_playeringame, set->ingame, sizeof(local_playeringame));
 
             loop_interface->RunTic(set->cmds, set->ingame);
-            gametic++;
+	    gametic++;
 
-            // modify command for duplicated tics
+	    // modify command for duplicated tics
 
             TicdupSquash(set);
-        }
+	}
 
-        NetUpdate ();	// check for new console commands
+	NetUpdate ();	// check for new console commands
     }
 }
 
