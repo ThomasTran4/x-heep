@@ -463,7 +463,7 @@ void R_DrawMaskedColumn (column_t* column)
         if (dc_yl <= dc_yh)
         {
             dc_source = (byte *)column + 3;
-            dc_texturemid = basetexturemid - (tempcolumn.topdelta<<FRACBITS);
+            dc_texturemid = basetexturemid - (tempcolumn.topdelta/2<<FRACBITS);
             // dc_source = (byte *)column + 3 - column->topdelta;
 
             // Drawn by either R_DrawColumn
@@ -541,7 +541,7 @@ R_DrawVisSprite
     spryscale = vis->scale;
     sprtopscreen = centeryfrac - FixedMul(dc_texturemid,spryscale);
         
-    for (dc_x=x1 ; dc_x<=x2 ; dc_x++, frac += vis->xiscale)
+    for (dc_x=x1 ; dc_x<=x2 ; dc_x++, frac += (vis->xiscale))
     {
         texturecolumn = frac>>FRACBITS;
         

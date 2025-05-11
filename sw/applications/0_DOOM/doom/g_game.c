@@ -2312,9 +2312,12 @@ void G_DoPlayDemo (void)
     demo_p += 1;
 
     for (i=0 ; i<MAXPLAYERS ; i++)
-    X_spi_read(demo_p, &temp_demo_data, 1);
+    {
+        X_spi_read(demo_p, &temp_demo_data, 1);
         playeringame[i] = ((temp_demo_data >> 0)  & 0xFF);
         demo_p += 1;
+    }
+    
 
     /* NRFD-TODO: demo
     if (playeringame[1] || M_CheckParm("-solo-net") > 0

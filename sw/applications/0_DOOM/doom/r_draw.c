@@ -117,20 +117,24 @@ void R_DrawTransColumn (void)
     int                 count; 
     pixel_t*            dest;
     fixed_t             frac;
-    fixed_t             fracstep;        
+    fixed_t             fracstep;  
+    
+    int temp_dc_yh = dc_yh/2;
+    int temp_dc_yl = dc_yl/2;
+    int temp_dc_x = dc_x/2; 
 
-    count = (dc_yh - dc_yl); 
+    count = (temp_dc_yh - temp_dc_yl); 
 
     // Zero length, column does not exceed a pixel.
     if (count < 0) 
         return; 
                                  
 #ifdef RANGECHECK 
-    if ((unsigned)dc_x >= SCREENWIDTH
-        || dc_yl < 0
-        || dc_yh >= SCREENHEIGHT) {
+    if ((unsigned)temp_dc_x >= SCREENWIDTH_PHYSICAL
+        || temp_dc_yl < 0
+        || temp_dc_yh >= SCREENHEIGHT_PHYSICAL) {
         // NRFD-TODO: I_Error 
-        PRINTF ("R_DrawColumn: %i to %i at %i\n", dc_yl, dc_yh, dc_x);
+        PRINTF ("R_DrawColumn: %i to %i at %i\n", temp_dc_yl, temp_dc_yh, temp_dc_x);
         return;
     }
 #endif 
@@ -138,12 +142,12 @@ void R_DrawTransColumn (void)
     // Framebuffer destination address.
     // Use ylookup LUT to avoid multiply with ScreenWidth.
     // Use columnofs LUT for subwindows? 
-    dest = ylookup(dc_yl) + columnofs(dc_x);  
+    dest = ylookup(temp_dc_yl) + columnofs(temp_dc_x);  
 
     // Determine scaling,
     //  which is the only mapping to be done.
     fracstep = dc_iscale; 
-    frac = dc_texturemid + (dc_yl-centery)*fracstep; 
+    frac = dc_texturemid + (temp_dc_yl-centery)*fracstep; 
 
     // Inner loop that does the actual texture mapping,
     //  e.g. a DDA-lile scaling.
@@ -159,14 +163,17 @@ void R_DrawTransColumn (void)
         pixel_t val = tempval;
         
         if (val != 251) { // Use pink as transparent color
+            *dest = dc_colormap[val]; 
+            /*
             X_spi_read(dc_colormap + val, &temp_val_data, 1); 
             *dest = (uint8_t)temp_val_data;
+            */
         }
         
-        dest += SCREENWIDTH; 
-        frac += fracstep;
+        dest += SCREENWIDTH_PHYSICAL; 
+        frac += 2*fracstep;
         X_spi_read(dc_source + ((frac>>FRACBITS)&127), &temp_val_data, 1);  
-        memcpy(&tempval, &temp_val_data, sizeof(column_t));  // Copy only 2 bytes 
+        memcpy(&tempval, &temp_val_data, sizeof(tempval));  // Copy only 1 bytes 
         
     } while (count--); 
 } 
