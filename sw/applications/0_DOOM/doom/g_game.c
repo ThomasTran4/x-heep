@@ -937,7 +937,6 @@ void G_Ticker (void)
             G_DoReborn (i);
 
     // do things to change the game state
-    if (gameaction != ga_nothing) printf("gameaction = %d\n", gameaction);
     while (gameaction != ga_nothing)
     {
         switch (gameaction)
@@ -1088,7 +1087,6 @@ X-HEEP COMMENT END */
     oldgamestate = gamestate;
 
     // do main actions
-    printf("gamestate: %d\n", gamestate);
     switch (gamestate)
     {
       case GS_LEVEL:
@@ -1108,7 +1106,6 @@ X-HEEP COMMENT END */
         break;
 
       case GS_DEMOSCREEN:
-        printf("LEAVING TO DEMOSCREEN");
         D_PageTicker ();
         break;
     }

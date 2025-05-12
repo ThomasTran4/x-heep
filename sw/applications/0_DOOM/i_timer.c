@@ -31,26 +31,18 @@
 //static Uint32 basetime = 0;
 
 // NRFD-TODO: Handle overflow of timer
-/*
+
 int  I_GetTime (void)
 {
     uint32_t time = X_get_time();
     int tickTime = (int)X_time_in_msecs(time) * 28; // 1/35 = 28.57
 
-    
+    /*
     NRF_DOOM_TIMER->TASKS_CAPTURE[0] = 1;
     uint64_t cc = NRF_DOOM_TIMER->CC[0];
     uint64_t tickTime = (cc * TICRATE)*10/312/1000;
-    
+    */
     return tickTime;
-}
-*/
-
-#define TICRATE 35
-
-int I_GetTime(void)
-{
-    return (X_time_in_msecs(X_get_time()) * TICRATE) / 1000;
 }
 
 //
@@ -60,6 +52,8 @@ int I_GetTime(void)
 int I_GetTimeMS(void)
 {
     uint32_t time = X_get_time();
+    //printf("In I_GetTimeMS, time :" "%" PRIu32 "\n", time); 
+    //printf("(int)X_time_in_msecs(time) : %i\n", (int)X_time_in_msecs(time)); 
     return (int)X_time_in_msecs(time);
 
     /*
@@ -121,4 +115,3 @@ void I_InitTimer(void)
     NRF_DOOM_TIMER->TASKS_START = 1;
 */
 }
-
