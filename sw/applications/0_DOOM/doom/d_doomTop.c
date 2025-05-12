@@ -512,6 +512,7 @@ void D_DoomLoop (void)
      
     I_InitGraphics(); 
     EnableLoadingDisk(); 
+    
     TryRunTics(); 
 
     V_RestoreBuffer();
@@ -540,8 +541,9 @@ void D_DoomLoop (void)
 
         // frame syncronous IO operations
         I_StartFrame ();
-
+        printf("TryRunTics: calling RunTic (tic %d)\n", gametic);
         TryRunTics (); // will run at least one tic
+        printf("TryRunTics: finished RunTic\n");
 
         //S_UpdateSounds (players[consoleplayer].mo);// move positional sounds
 

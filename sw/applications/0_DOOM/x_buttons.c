@@ -56,7 +56,7 @@ void X_ButtonsInit(void)
             .mode = GpioModeIn,
             .en_input_sampling = true,
             .en_intr = true,
-            .intr_type = GpioIntrEdgeRising
+            .intr_type = GpioIntrEdgeRisingFalling
         };
 
         if (gpio_config(cfg) != GpioOk) {
@@ -79,23 +79,48 @@ void X_ButtonsInit(void)
 }
 
 // --- Private helper ---
-
+/*
 static void x_button_common_handler(int idx)
 {
     static event_t event;
 
-    // Send KeyDown event
-    event.type = ev_keydown;
+    bool state;
+    gpio_read(gpio_tb[idx], &state);
+    printf("GPIO pin %d state: %d\n", gpio_tb[idx], state);
+
+
+    if (state) {
+        event.type = ev_keydown;
+        printf("Button %d pressed\n", idx);
+    } else {
+        event.type = ev_keyup;
+        printf("Button %d released\n", idx);
+    }
+    button_prev_state[idx] = state;
+
+
     event.data1 = button_map[idx];
     event.data2 = 0;
     event.data3 = 0;
     D_PostEvent(&event);
+}
+*/
 
-    // Immediately send KeyUp event
-    //event.type = ev_keyup;
-    //D_PostEvent(&event);
+static void x_button_common_handler(int idx)
+{
+    static event_t event;
+    static bool toggled_state[6] = {false};  // one for each button
 
-    printf("Button %d pressed (rising edge)\n", idx);
+    toggled_state[idx] = !toggled_state[idx];
+
+    event.type = toggled_state[idx] ? ev_keydown : ev_keyup;
+    event.data1 = button_map[idx];
+    event.data2 = 0;
+    event.data3 = 0;
+
+    D_PostEvent(&event);
+
+    printf("Button %d %s (toggle mode)\n", idx, toggled_state[idx] ? "pressed" : "released");
 }
 
 // --- Interrupt handlers ---
