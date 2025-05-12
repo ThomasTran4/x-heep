@@ -70,8 +70,6 @@ static void PlayerQuitGame(player_t *player)
 
 static void RunTic(ticcmd_t *cmds, boolean *ingame)
 {
-    printf("Calling RunTic\n");
-
     extern boolean advancedemo;
     unsigned int i;
 

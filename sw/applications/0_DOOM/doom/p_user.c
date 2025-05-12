@@ -158,7 +158,7 @@ void P_MovePlayer (player_t* player)
 
     if (cmd->forwardmove && onground)
         P_Thrust (player, player->mo->angle, cmd->forwardmove*2048);
-        printf("FORWARD_MOVEP");
+        printf("FORWARD_MOVEP\n");
         //P_Thrust (player, player->mo->angle, 10*2048); debug
 
     if (cmd->sidemove && onground)
