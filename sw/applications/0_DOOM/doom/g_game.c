@@ -1981,15 +1981,15 @@ void G_ReadDemoTiccmd (ticcmd_t* cmd)
         return;
     }
 
-    printf("temp_demo_data %i\n", temp_demo_data); 
+    //printf("temp_demo_data %i\n", temp_demo_data); 
 
-    printf("(temp_demo_data >> 0)  & 0xFF) %i\n", (temp_demo_data >> 0)  & 0xFF); 
+    //printf("(temp_demo_data >> 0)  & 0xFF) %i\n", (temp_demo_data >> 0)  & 0xFF); 
     cmd->forwardmove = ((signed char)((temp_demo_data >> 0)  & 0xFF));
-    printf("cmd->forwardmove %i\n ", cmd->forwardmove); 
+    //printf("cmd->forwardmove %i\n ", cmd->forwardmove); 
     demo_p += 1; 
-    printf("(temp_demo_data >> 8)  & 0xFF) %i\n", (temp_demo_data >> 8)  & 0xFF); 
+    //printf("(temp_demo_data >> 8)  & 0xFF) %i\n", (temp_demo_data >> 8)  & 0xFF); 
     cmd->sidemove = ((signed char)((temp_demo_data >> 8)  & 0xFF));
-    printf("cmd->sidemove %i\n ", cmd->sidemove);
+    //printf("cmd->sidemove %i\n ", cmd->sidemove);
     demo_p += 1;
 
     // If this is a longtics demo, read back in higher resolution

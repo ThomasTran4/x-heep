@@ -123,9 +123,9 @@ static int player_class;
 
 // 35 fps clock adjusted by offsetms milliseconds
 
-static int GetAdjustedTime(void)
+static uint32_t GetAdjustedTime(void)
 {
-    int time_ms;
+    uint32_t time_ms;
 
     time_ms = I_GetTimeMS();
 
@@ -136,7 +136,7 @@ static int GetAdjustedTime(void)
 
         time_ms += (offsetms / FRACUNIT);
     }
-    int adjusted_time = (time_ms * TICRATE) / 1000;
+    uint32_t adjusted_time = (time_ms * TICRATE) / 1000;
     return adjusted_time;
 }
 
@@ -201,12 +201,12 @@ static boolean BuildNewTic(void)
 // Builds ticcmds for console player,
 // sends out a packet
 //
-int      lasttime;
+uint32_t      lasttime;
 
 void NetUpdate (void)
 {
-    int nowtime;
-    int newtics;
+    uint32_t nowtime;
+    uint32_t newtics;
     int	i;
 
     // If we are running with singletics (timing a demo), this
