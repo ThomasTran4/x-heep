@@ -159,8 +159,7 @@ void R_DrawTransColumn (void)
         pixel_t val = tempval;
         
         if (val != 251) { // Use pink as transparent color
-            X_spi_read(dc_colormap + val, &temp_val_data, 1); 
-            *dest = (uint8_t)temp_val_data;
+            *dest = dc_colormap[val];  
         }
         
         dest += SCREENWIDTH; 

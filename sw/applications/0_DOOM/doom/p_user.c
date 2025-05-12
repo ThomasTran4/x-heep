@@ -149,8 +149,8 @@ void P_MovePlayer (player_t* player)
 
     player->mo->angle += (cmd->angleturn<<FRACBITS);
 
-    printf("cmd->forwardmove %i\n ", cmd->forwardmove);
-    printf("cmd->sidemove %i\n ", cmd->sidemove);
+    //printf("cmd->forwardmove %i\n ", cmd->forwardmove);
+    //printf("cmd->sidemove %i\n ", cmd->sidemove);
 
     // Do not let the player control movement
     //  if not onground.

@@ -123,11 +123,12 @@ static int player_class;
 
 // 35 fps clock adjusted by offsetms milliseconds
 
-static int GetAdjustedTime(void)
+static uint32_t GetAdjustedTime(void)
 {
-    int time_ms;
+    uint32_t time_ms;
 
     time_ms = I_GetTimeMS();
+    //printf ("In GetAdjustedTime, time_ms : " "%" PRIu32 "\n", time_ms);
 
     if (new_sync)
     {
@@ -136,7 +137,9 @@ static int GetAdjustedTime(void)
 
         time_ms += (offsetms / FRACUNIT);
     }
-    int adjusted_time = (time_ms * TICRATE) / 1000;
+    uint32_t adjusted_time = (time_ms * TICRATE) / 1000;
+    //printf ("In GetAdjustedTime, (time_ms * TICRATE) : " "%" PRIu32 "\n", (time_ms * TICRATE));
+    //printf ("In GetAdjustedTime, adjusted_time : %i\n", adjusted_time);
     return adjusted_time;
 }
 
@@ -201,12 +204,14 @@ static boolean BuildNewTic(void)
 // Builds ticcmds for console player,
 // sends out a packet
 //
-int      lasttime;
+uint32_t      lasttime;
 
 void NetUpdate (void)
 {
-    int nowtime;
-    int newtics;
+    //printf("In NetUpdate\n"); 
+
+    uint32_t nowtime;
+    uint32_t newtics;
     int	i;
 
     // If we are running with singletics (timing a demo), this
@@ -221,6 +226,9 @@ void NetUpdate (void)
 
     // check time
     nowtime = GetAdjustedTime() / ticdup;
+
+    //printf("In NetUpdate, nowtime : %i\n", nowtime); 
+
     newtics = nowtime - lasttime;
     lasttime = nowtime;
 
@@ -233,6 +241,7 @@ void NetUpdate (void)
     {
         skiptics -= newtics;
         newtics = 0;
+        //printf("In NetUpdate, newtics = 0\n");
     }
 
     // build new ticcmds for console player
@@ -699,6 +708,8 @@ void TryRunTics (void)
     int	availabletics;
     int	counts;
 
+    //printf("TryRunTics\n"); 
+
     // get real tics
     entertic = I_GetTime() / ticdup;
     realtics = entertic - oldentertics;
@@ -707,6 +718,8 @@ void TryRunTics (void)
 
     // in singletics mode, run a single tic every time this function
     // is called.
+
+    //printf("In TryRunTics before first if, singletick : %i\n", singletics); 
 
     if (singletics)
     {
@@ -719,10 +732,16 @@ void TryRunTics (void)
 
     lowtic = GetLowTic();
 
+    //printf("lowtic : %i\n", lowtic);
+    //printf("gametic/ticdup : %i\n", gametic/ticdup); 
 
     availabletics = lowtic - gametic/ticdup;
 
     // decide how many tics to run
+
+    //printf("In TryRunTics, availabletics : %i\n", availabletics);
+
+    //printf("In TryRunTics before 2nd if, singletick : %i\n", new_sync);
 
     if (new_sync)
     {
@@ -751,12 +770,13 @@ void TryRunTics (void)
         counts = 1;
 
     // wait for new tics if needed
+
+    //printf("In TryRunTics before while\n");
     while (!PlayersInGame() || lowtic < gametic/ticdup + counts)
     {
 
         //printf("PlayersInGame :  %i\n", PlayersInGame());
-        //printf("lowtic : %i\n", lowtic);
-        //printf("gametic/ticdup : %i\n", gametic/ticdup); 
+        
         //printf("counts : %i\n", counts); 
 
         NetUpdate ();
@@ -774,6 +794,7 @@ void TryRunTics (void)
             // forever - give the menu a chance to work.
             if (I_GetTime() / ticdup - entertic >= MAX_NETGAME_STALL_TICS)
             {
+                //printf("In TryRunTics in while before return\n");
                 return;
             }
 
@@ -781,7 +802,7 @@ void TryRunTics (void)
         }
     }
 
-
+    //printf("In TryRunTics before second while\n");
     // run the count * ticdup dics
     while (counts--)
     {
@@ -789,6 +810,7 @@ void TryRunTics (void)
 
         if (!PlayersInGame())
         {
+            //printf("In TryRunTics in second while before return\n");
             return;
         }
 

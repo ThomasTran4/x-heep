@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 
 #include "csr_registers.h"
 #include "csr.h"
@@ -23,7 +24,9 @@ void X_stop_time(void)
 uint32_t X_get_time(void)
 {  
     uint32_t current_time;
-    CSR_READ(CSR_REG_MCYCLE, &current_time);
+    CSR_READ(CSR_REG_MCYCLE, &current_time); 
+    //printf("In X_get_time, current_time :" "%" PRIu32 "\n", current_time);
+    //printf("In X_get_time, current_time - start_time_val : " "%" PRIu32 "\n", current_time - start_time_val);
     return (current_time - start_time_val);
 }
 

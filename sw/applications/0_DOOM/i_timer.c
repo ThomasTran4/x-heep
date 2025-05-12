@@ -52,6 +52,8 @@ int  I_GetTime (void)
 int I_GetTimeMS(void)
 {
     uint32_t time = X_get_time();
+    //printf("In I_GetTimeMS, time :" "%" PRIu32 "\n", time); 
+    //printf("(int)X_time_in_msecs(time) : %i\n", (int)X_time_in_msecs(time)); 
     return (int)X_time_in_msecs(time);
 
     /*

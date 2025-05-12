@@ -73,6 +73,8 @@ static void RunTic(ticcmd_t *cmds, boolean *ingame)
     extern boolean advancedemo;
     unsigned int i;
 
+    //printf("RunTic\n"); 
+
     // Check for player quits.
 
     for (i = 0; i < MAXPLAYERS; ++i)
