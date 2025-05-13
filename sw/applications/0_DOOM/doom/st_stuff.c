@@ -721,7 +721,7 @@ void ST_updateFaceWidget(void)
     static int  lastattackdown = -1;
     static int  priority = 0;
     boolean     doevilgrin;
-
+/*
     if (priority < 10)
     {
         // dead
@@ -883,7 +883,7 @@ void ST_updateFaceWidget(void)
     }
 
     st_facecount--;
-
+*/
 }
 
 void ST_updateWidgets(void)
