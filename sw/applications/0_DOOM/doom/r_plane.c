@@ -76,7 +76,7 @@ short                   spanstop[SCREENHEIGHT];
 //
 // texture mapping
 //
-lighttable_t**          planezlight;
+//lighttable_t**          planezlight;
 fixed_t                 planeheight;
 
 // NRFD-TODO: CHange view size
@@ -198,17 +198,24 @@ R_MapPlane
     ds_xfrac = viewx + FixedMul(cosval, length);
     ds_yfrac = -viewy - FixedMul(sineval, length);
 
+    //ds_colormap = fixedcolormap;
+
+    
     if (fixedcolormap)
         ds_colormap = fixedcolormap;
     else
     {
+        ds_colormap = colormaps;
+        /*
         index = distance >> LIGHTZSHIFT;
         
         if (index >= MAXLIGHTZ )
             index = MAXLIGHTZ-1;
 
-        ds_colormap = planezlight[index];
+        //ds_colormap = planezlight[index]; 
+        */
     }
+    
         
     ds_y = y;
     ds_x1 = x1;
@@ -509,7 +516,7 @@ void R_DrawPlanes (void)
         if (light < 0)
             light = 0;
 
-        planezlight = zlight[light];
+        //planezlight = zlight[light];
 
         pl->top[pl->maxx+1] = 0xff;
         pl->top[pl->minx-1] = 0xff;

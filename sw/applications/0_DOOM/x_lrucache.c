@@ -7,9 +7,8 @@
 /**                       TYPEDEFS AND STRUCTURES                          **/
 /**                                                                        **/
 /****************************************************************************/
-
-//Might need to increase this if i have many cache entries  
-#define HASH_TABLE_SIZE 16
+  
+#define HASH_TABLE_SIZE 4
 
 // Cache entry structure, with pointers for a doubly-linked LRU list.
 //24 bytes 

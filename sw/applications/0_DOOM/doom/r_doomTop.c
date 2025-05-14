@@ -396,7 +396,7 @@ const angle_t                 xtoviewangle[SCREENWIDTH+1] =
 
 lighttable_t*           scalelight[LIGHTLEVELS][MAXLIGHTSCALE];
 lighttable_t*           scalelightfixed[MAXLIGHTSCALE];
-lighttable_t*           zlight[LIGHTLEVELS][MAXLIGHTZ];
+//lighttable_t*           zlight[LIGHTLEVELS][MAXLIGHTZ];
 
 // bumped light from gun blasts
 int                     extralight;                     
@@ -956,7 +956,7 @@ void R_InitLightTables (void)
                 level = NUMCOLORMAPS-1;
  
             uint32_t temp_data; 
-            zlight[i][j] = colormaps + level*256;
+            //zlight[i][j] = colormaps + level*256;
         }
     }
 }
@@ -1115,13 +1115,13 @@ void R_ExecuteSetViewSize (void)
 void R_Init (void)
 {
     R_InitData ();
-    R_InitPointToAngle (); //useless
-    R_InitTables (); //useless 
+    //R_InitPointToAngle (); //useless
+    //R_InitTables (); //useless 
     // viewwidth / viewheight / detailLevel are set by the defaults
 
     R_SetViewSize (screenblocks, detailLevel);
-    R_InitPlanes (); //useless 
-    R_InitLightTables ();
+    //R_InitPlanes (); //useless 
+    //R_InitLightTables ();
     R_InitSkyMap ();
     R_InitTranslationTables ();
         

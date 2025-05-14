@@ -69,7 +69,7 @@ extern int		loopcount;
 
 extern lighttable_t*	scalelight[LIGHTLEVELS][MAXLIGHTSCALE];
 extern lighttable_t*	scalelightfixed[MAXLIGHTSCALE];
-extern lighttable_t*	zlight[LIGHTLEVELS][MAXLIGHTZ];
+//extern lighttable_t*	zlight[LIGHTLEVELS][MAXLIGHTZ];
 
 extern int		extralight;
 extern lighttable_t*	fixedcolormap;
