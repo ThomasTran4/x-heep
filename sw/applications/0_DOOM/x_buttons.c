@@ -15,6 +15,7 @@
 
 // --- Private defines ---
 #define GPIO_TB_IN_UP     10
+
 //#define GPIO_TB_IN_DOWN  9
 //#define GPIO_TB_IN_LEFT  11
 //#define GPIO_TB_IN_RIGHT 12
@@ -59,7 +60,9 @@ void X_ButtonsInit(void)
             .mode = GpioModeIn,
             .en_input_sampling = true,
             .en_intr = true,
+
             .intr_type = GpioIntrEdgeRisingFalling
+
         };
 
         if (gpio_config(cfg) != GpioOk) {
@@ -81,11 +84,11 @@ void X_ButtonsInit(void)
     CSR_SET_BITS(CSR_REG_MIE, (1 << 11));
 }
 
-// --- Private helper ---
-/*
+
 static void x_button_common_handler(int idx)
 {
     static event_t event;
+
 
     bool state;
     gpio_read(gpio_tb[idx], &state);
@@ -106,6 +109,7 @@ static void x_button_common_handler(int idx)
     event.data2 = 0;
     event.data3 = 0;
     D_PostEvent(&event);
+
 }
 */
 
@@ -124,6 +128,7 @@ static void x_button_common_handler(int idx)
     D_PostEvent(&event);
 
     printf("Button %d %s (toggle mode)\n", idx, toggled_state[idx] ? "pressed" : "released");
+
 }
 
 // --- Interrupt handlers ---
@@ -136,6 +141,7 @@ void button_up_handler(void) {
 void button_down_handler(void) {
     x_button_common_handler(1);
     gpio_intr_clear_stat(GPIO_TB_IN_DOWN);
+
 }
 
 void button_left_handler(void) {
@@ -153,6 +159,7 @@ void button_a_handler(void) {
     x_button_common_handler(5);
     gpio_intr_clear_stat(GPIO_TB_IN_A);
 }
+
 
 void button_b_handler(void) {
     x_button_common_handler(4);

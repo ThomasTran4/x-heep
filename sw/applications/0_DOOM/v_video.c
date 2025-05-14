@@ -212,7 +212,11 @@ void V_DrawPatch(int x, int y, patch_t *patch)
         {
             source = (byte *)column + 3;
             //dest = desttop + tempcolumn.topdelta*SCREENWIDTH;
+
             dest = desttop + (tempcolumn.topdelta / 2) * SCREENWIDTH_PHYSICAL;
+
+           
+
 
             count = tempcolumn.length/2;
 

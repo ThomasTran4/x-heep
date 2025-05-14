@@ -127,8 +127,8 @@ const int usemouse = 1;
 
 pixel_t *I_VideoBuffer; //[320*200];
 //pixel_t *I_VideoBackBuffer; //[320*200];
-//pixel_t I_VideoBuffers[320*200];
 pixel_t I_VideoBuffers[160*100];
+//pixel_t I_VideoBuffers[160*100];
 
 uint8_t  display_pal[DISPLAY_PALETTE_SIZE];
 
@@ -326,13 +326,14 @@ void I_FinishUpdate (void)
         tics = i - lasttic;
         lasttic = i;
         if (tics > 20) tics = 20;
+        
 
         for (i=0 ; i<tics*4 ; i+=4)
             I_VideoBuffer[ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0xff;
         for ( ; i<20*4 ; i+=4)
             I_VideoBuffer[ (SCREENHEIGHT-1)*SCREENWIDTH + i] = 0x0;
     }
-
+ 
     PRINTF("UPDATE SCREEN\n");
 
     X_Display_Draw_Screen_200x200();
