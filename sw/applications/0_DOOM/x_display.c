@@ -2,6 +2,7 @@
 #include "x_display.h"
 #include "i_video.h"
 #include "ST7789_driver.h"
+#include "x_time.h"
 
 #define PRINTF(fmt, ...)    PRINTF(fmt, ## __VA_ARGS__)
 
@@ -65,6 +66,8 @@ void X_Display_Draw_ScreenBuffer(void)
 void X_Display_Draw_Screen_200x200(void)
 {
 
+    //uint32_t start_time = X_get_time(); 
+
     ST7789_set_adress_window(0, 0, 240, 240);
 
 
@@ -92,4 +95,10 @@ void X_Display_Draw_Screen_200x200(void)
             ST7789_spi_write_data_2B(rgb565);
         }
     }
+
+    /*
+    uint32_t stop_time = X_get_time(); 
+    uint32_t time_took = X_time_in_msecs(stop_time - start_time); 
+    printf("time tool in ms : %i\n", time_took);
+    */ 
 }

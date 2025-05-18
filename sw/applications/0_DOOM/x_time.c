@@ -29,12 +29,12 @@ uint32_t X_get_time(void)
 
 uint32_t X_time_in_secs(uint32_t ticks)
 {
-    return ticks*16E-6;  // Normalized to 16 MHz clock period
+    return ticks/15000000;  // Normalized to 15 MHz clock period
 }
 
 uint32_t X_time_in_msecs(uint32_t ticks)
 {
-    return ticks*16E-3;  // Normalized to 16 MHz clock period
+    return ticks/15000;  // Normalized to 15 MHz clock period
 }
 
 void X_milli_delay(int n_milli_seconds)

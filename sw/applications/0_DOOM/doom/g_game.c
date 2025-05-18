@@ -1993,7 +1993,6 @@ void G_ReadDemoTiccmd (ticcmd_t* cmd)
     demo_p += 1;
 
     // If this is a longtics demo, read back in higher resolution
-
     if (longtics)
     {
         cmd->angleturn = ((temp_demo_data >> 16)  & 0xFF);

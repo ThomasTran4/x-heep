@@ -46,7 +46,7 @@
 #define ANGLETOFINESHIFT	19		
 
 // Effective size is 10240.
-extern int32_t finesine[10240]; //X-HEEP comment: finesine is stored in flash it must be read using read_finesine
+extern fixed_t finesine[10240]; //X-HEEP comment: finesine is stored in flash it must be read using read_finesine
 
 // Re-use data, is just PI/2 pahse shift.
 //extern const fixed_t *finecosine;

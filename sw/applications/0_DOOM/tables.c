@@ -578,7 +578,7 @@ int32_t __attribute__((section(".xheep_data_flash_only"))) __attribute__((aligne
 };
 
 
-int32_t __attribute__((section(".xheep_data_flash_only"))) __attribute__((aligned(16))) finesine[10240] =
+fixed_t __attribute__((section(".xheep_data_flash_only"))) __attribute__((aligned(16))) finesine[10240] =
 {
     25,75,125,175,226,276,326,376,
     427,477,527,578,628,678,728,779,
