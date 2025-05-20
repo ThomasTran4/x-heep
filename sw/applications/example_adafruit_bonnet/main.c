@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     {
         readButtons();
         for(uint8_t i = 0; i<BUTTON_COUNT; i++)
-        {
+        {/*
             if(button_posedge[i])
             {
                 PRINTF("Button %s pressed\n", ButtonNames[i]);
@@ -111,6 +111,7 @@ int main(int argc, char *argv[]) {
             } else if (button_negedge[i]) {
                 PRINTF("Button %s released\n", ButtonNames[i]);
             }
+                */
         }
         ST7789_test_fill_picture_with_shift(&filtered_array,shift_y,shift_x);
         PRINTF("LOOP FINISHED\n");

@@ -352,7 +352,8 @@ int32_t __attribute__((section(".xheep_data_flash_only"))) __attribute__((aligne
 // The xtoviewangle[] table maps a screen pixel
 // to the lowest viewangle that maps back to x ranges
 // from clipangle to -clipangle.
-const angle_t                 xtoviewangle[SCREENWIDTH+1] = 
+
+angle_t __attribute__((section(".xheep_data_flash_only"))) __attribute__((aligned(16))) xtoviewangle[SCREENWIDTH+1] = 
 {537395200, 534773760, 532676608, 530579456, 528482304, 526385152, 524288000, 521666560, 
 519569408, 517472256, 514850816, 512753664, 510656512, 508035072, 505937920, 503316480, 
 501219328, 498597888, 496500736, 493879296, 491782144, 489160704, 486539264, 484442112, 
@@ -581,6 +582,7 @@ R_PointToAngle
 {       
     x -= viewx;
     y -= viewy;
+    angle_t temp;
     
     if ( (!x) && (!y) )
         return 0;
@@ -595,12 +597,14 @@ R_PointToAngle
             if (x>y)
             {
                 // octant 0
-                return tantoangle[ SlopeDiv(y,x)];
+                temp = read_tantoangle(SlopeDiv(y,x));
+                return temp;
             }
             else
             {
                 // octant 1
-                return ANG90-1-tantoangle[ SlopeDiv(x,y)];
+                temp = ANG90-1-read_tantoangle(SlopeDiv(x,y));
+                return temp;
             }
         }
         else
@@ -611,12 +615,14 @@ R_PointToAngle
             if (x>y)
             {
                 // octant 8
-                return -tantoangle[SlopeDiv(y,x)];
+                temp = -read_tantoangle(SlopeDiv(y,x));
+                return temp;
             }
             else
             {
                 // octant 7
-                return ANG270+tantoangle[ SlopeDiv(x,y)];
+                temp = ANG270+read_tantoangle(SlopeDiv(x,y));
+                return temp;
             }
         }
     }
@@ -631,12 +637,14 @@ R_PointToAngle
             if (x>y)
             {
                 // octant 3
-                return ANG180-1-tantoangle[ SlopeDiv(y,x)];
+                temp = ANG180-1-read_tantoangle(SlopeDiv(y,x));
+                return temp;
             }
             else
             {
                 // octant 2
-                return ANG90+ tantoangle[ SlopeDiv(x,y)];
+                temp = ANG90+read_tantoangle(SlopeDiv(x,y));
+                return temp;
             }
         }
         else
@@ -647,12 +655,14 @@ R_PointToAngle
             if (x>y)
             {
                 // octant 4
-                return ANG180+tantoangle[ SlopeDiv(y,x)];
+                temp = ANG180+read_tantoangle(SlopeDiv(y,x));
+                return temp;
             }
             else
             {
                  // octant 5
-                return ANG270-1-tantoangle[ SlopeDiv(x,y)];
+                 temp = ANG270-1-read_tantoangle(SlopeDiv(x,y));
+                 return temp;
             }
         }
     }
@@ -707,7 +717,7 @@ R_PointToDist
         frac = 0;
     }
         
-    angle = (tantoangle[frac>>DBITS]+ANG90) >> ANGLETOFINESHIFT;
+    angle = (read_tantoangle(frac>>DBITS)+ANG90) >> ANGLETOFINESHIFT;
 
     fixed_t sineval = read_finesine(angle); 
     // use as cosine
@@ -918,7 +928,7 @@ void R_InitTextureMapping (void)
     }
     */
 
-    clipangle = xtoviewangle[0];
+    clipangle = read_xtoviewangle(0);
 }
 
 

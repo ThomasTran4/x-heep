@@ -9,6 +9,12 @@
 extern bool button_state[6];
 extern bool button_posedge[6];
 extern bool button_negedge[6];
+void button_up_handler(void);
+void button_down_handler(void);
+void button_left_handler(void);
+void button_right_handler(void);
+void button_a_handler(void);
+void button_b_handler(void);
 
 // Declare any function prototypes here
 void buttonsInit(void);
