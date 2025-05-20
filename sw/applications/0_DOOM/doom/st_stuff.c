@@ -721,7 +721,7 @@ void ST_updateFaceWidget(void)
     static int  lastattackdown = -1;
     static int  priority = 0;
     boolean     doevilgrin;
-
+/*
     if (priority < 10)
     {
         // dead
@@ -883,7 +883,7 @@ void ST_updateFaceWidget(void)
     }
 
     st_facecount--;
-
+*/
 }
 
 void ST_updateWidgets(void)
@@ -1459,4 +1459,3 @@ void ST_Init (void)
     //X-HEEP comment 
     //st_backing_screen = (pixel_t *) Z_Malloc(ST_WIDTH * ST_HEIGHT * sizeof(*st_backing_screen), PU_STATIC, 0);
 }
-
