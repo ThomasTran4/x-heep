@@ -457,13 +457,13 @@ void HU_Start(void)
 
 void HU_Drawer(void)
 {
-    printf ("In HU_Drawer before HUlib_drawSText\n");
+    //printf ("In HU_Drawer before HUlib_drawSText\n");
     HUlib_drawSText(&w_message);
     HUlib_drawSText(&w_fps);
     // HUlib_drawIText(&w_chat); // NRFD-TODO: Chat
     if (automapactive)
     {
-        printf ("In HU_Drawer before HUlib_drawSText\n");
+        //printf ("In HU_Drawer before HUlib_drawSText\n");
         HUlib_drawTextLine(&w_title, false);
     }
         
@@ -483,7 +483,7 @@ extern uint32_t frame_time_fps;
 
 void HU_Ticker(void)
 {
-    printf("HU_Ticker\n"); 
+    //printf("HU_Ticker\n"); 
     int i, rc;
     char c;
 

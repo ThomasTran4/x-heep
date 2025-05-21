@@ -233,7 +233,7 @@ void D_Display (void)
     }
     
     // do buffered drawing
-    PRINTF("In D_Display before switch, gamestate : %i\n", gamestate); 
+    //PRINTF("In D_Display before switch, gamestate : %i\n", gamestate); 
     switch (gamestate)
     {
       case GS_LEVEL:
@@ -241,14 +241,14 @@ void D_Display (void)
             break;
         if (automapactive)
         {
-            PRINTF("In D_Display in switch, before Am_Drawer\n");
+            //PRINTF("In D_Display in switch, before Am_Drawer\n");
             AM_Drawer ();
         }
         if (wipe || (viewheight != SCREENHEIGHT && fullscreen))
             redrawsbar = true;
         if (inhelpscreensstate && !inhelpscreens)
             redrawsbar = true;              // just put away the help screen
-        PRINTF("In D_Display in switch, before ST_Drawer\n"); 
+        //PRINTF("In D_Display in switch, before ST_Drawer\n"); 
         ST_Drawer (viewheight == SCREENHEIGHT, redrawsbar );
         fullscreen = viewheight == SCREENHEIGHT;
         break;
@@ -272,13 +272,13 @@ void D_Display (void)
     // draw the view directly
     if (gamestate == GS_LEVEL && !automapactive && gametic)
     {
-        PRINTF("In D_Display before R_RenderPlayerView\n");
+        //PRINTF("In D_Display before R_RenderPlayerView\n");
         R_RenderPlayerView (&players[displayplayer]);
     }    
 
     if (gamestate == GS_LEVEL && gametic)
     {
-        PRINTF("In D_Display before HU_Drawer\n");
+        //PRINTF("In D_Display before HU_Drawer\n");
         HU_Drawer ();
     }
         
@@ -344,7 +344,7 @@ void D_Display (void)
 
     // normal update
 
-    PRINTF("In D_Display after M_Drawer, wipe %i\n", wipe);
+    //PRINTF("In D_Display after M_Drawer, wipe %i\n", wipe);
 
     if (!wipe)
     {
@@ -352,17 +352,17 @@ void D_Display (void)
         return;
     }
 
-    PRINTF("In D_Display before wipe_EndScreen \n");
+    //PRINTF("In D_Display before wipe_EndScreen \n");
 
     // wipe update
     wipe_EndScreen(0, 0, SCREENWIDTH, SCREENHEIGHT);
 
-    PRINTF("In D_Display after wipe\n");
+    //PRINTF("In D_Display after wipe\n");
 
     wipestart = I_GetTime () - 1;
 
     tics = 0;
-    PRINTF("In D_Display before do while\n");
+    //PRINTF("In D_Display before do while\n");
     do
     {
         do
@@ -530,6 +530,8 @@ void D_DoomLoop (void)
     // nrf_cache_profiling_set(NRF_CACHE_S, 1);
     while (1)
     {
+        //uint32_t start_time = X_get_time();
+
         //nrf_cache_profiling_counters_clear(NRF_CACHE_S);
         int frame_time = I_GetTimeRaw();
         frame_time_fps = I_RawTimeToFps(frame_time-frame_time_prev);
@@ -546,7 +548,7 @@ void D_DoomLoop (void)
         //S_UpdateSounds (players[consoleplayer].mo);// move positional sounds
 
         // Update display, next frame, with current state.
-        PRINTF("Before D_Display in D_DoomLoop\n"); 
+        //PRINTF("Before D_Display in D_DoomLoop\n"); 
         if (screenvisible)
             D_Display ();  
         /*
@@ -568,14 +570,20 @@ void D_DoomLoop (void)
         if (!startedGame)
         {
             startedGame = true;
-            G_DeferedInitNew(sk_hard, 1, 1);
-            //D_AdvanceDemo(); 
+            //G_DeferedInitNew(sk_hard, 1, 1);
+            D_AdvanceDemo(); 
         }
         #endif
 
         //N_ldbg("=== LOOP END ===\n");
-        PRINTF("=== LOOP END ===\n");
+        //PRINTF("=== LOOP END ===\n");
         frame_time_prev = frame_time;
+
+        /*
+        uint32_t stop_time = X_get_time(); 
+        uint32_t time_took = X_time_in_msecs(stop_time - start_time); 
+        printf("time took in ms : %i\n", time_took);
+        */
     }
 
 }

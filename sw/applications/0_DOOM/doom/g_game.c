@@ -445,13 +445,13 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     {
         // fprintf(stderr, "%s\n", );(stderr, "up\n");
         forward += forwardmove[speed];
-        printf("FORWARD");
+        printf("FORWARD\n");
     }
     if (gamekeydown(key_down))
     {
         // fprintf(stderr, "down\n");
         forward -= forwardmove[speed];
-        printf("BACKWARD");
+        printf("BACKWARD\n");
     }
 
     if (joyymove != 0) {
@@ -1090,7 +1090,7 @@ X-HEEP COMMENT END */
     switch (gamestate)
     {
       case GS_LEVEL:
-        printf("In G_ticker before switch, gamestate : %i\n", gamestate);
+        //printf("In G_ticker before switch, gamestate : %i\n", gamestate);
         P_Ticker ();
         ST_Ticker ();
         AM_Ticker ();

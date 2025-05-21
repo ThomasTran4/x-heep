@@ -103,7 +103,7 @@ void P_FreeMobj (mobj_t* mobj);
 //
 void P_RunThinkers (void)
 {
-    printf("P_RunThinkers\n"); 
+    //printf("P_RunThinkers\n"); 
     thinker_t *currentthinker, *nextthinker;
 
     currentthinker = thinkercap.next;
@@ -150,7 +150,7 @@ void P_Ticker (void)
 {
     int         i;
 
-    printf("P_Ticker\n"); 
+    //printf("P_Ticker\n"); 
     
     // run the tic
     if (paused)
@@ -168,7 +168,7 @@ void P_Ticker (void)
     for (i=0 ; i<MAXPLAYERS ; i++)
         if (playeringame[i])
         {
-            printf("In P_Ticker before P_PlayerThink\n"); 
+            //printf("In P_Ticker before P_PlayerThink\n"); 
             P_PlayerThink (&players[i]);
         }
             

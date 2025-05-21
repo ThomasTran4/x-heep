@@ -54,7 +54,7 @@ P_Thrust
   angle_t       angle,
   fixed_t       move )
 {
-    printf("In P_thrust\n"); 
+    //printf("In P_thrust\n"); 
     angle >>= ANGLETOFINESHIFT;
     fixed_t sineval = read_finesine(angle);
     fixed_t cosval = read_finecosine(angle); 
@@ -158,7 +158,7 @@ void P_MovePlayer (player_t* player)
 
     if (cmd->forwardmove && onground)
         P_Thrust (player, player->mo->angle, cmd->forwardmove*2048);
-        printf("FORWARD_MOVEP\n");
+        //printf("FORWARD_MOVEP\n");
         //P_Thrust (player, player->mo->angle, 10*2048); debug
 
     if (cmd->sidemove && onground)
@@ -271,7 +271,7 @@ void P_PlayerThink (player_t* player)
         player->mo->reactiontime--;
     else
     {
-        printf("In P_PlayerThink before P_MovePlayer\n"); 
+        //printf("In P_PlayerThink before P_MovePlayer\n"); 
         P_MovePlayer (player);
     }
        

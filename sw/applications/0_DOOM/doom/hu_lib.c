@@ -248,7 +248,7 @@ void HUlib_drawSText(hu_stext_t* s)
 	l = &s->l[idx];
 
 	// need a decision made here on whether to skip the draw
-    printf("IN HUlib_drawSText before HUlib_drawTextLine\n"); 
+    //printf("IN HUlib_drawSText before HUlib_drawTextLine\n"); 
 	HUlib_drawTextLine(l, false); // no cursor, please
     }
 
