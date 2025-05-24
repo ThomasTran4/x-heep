@@ -570,8 +570,8 @@ void D_DoomLoop (void)
         if (!startedGame)
         {
             startedGame = true;
-            //G_DeferedInitNew(sk_hard, 1, 1);
-            D_AdvanceDemo(); 
+            G_DeferedInitNew(sk_medium, 1, 1);
+            //D_AdvanceDemo(); 
         }
         #endif
 
