@@ -19,8 +19,8 @@
 #define GPIO_TB_IN_UP     10
 #define GPIO_TB_IN_DOWN  11
 #define GPIO_TB_IN_LEFT  12
-#define GPIO_TB_IN_RIGHT 9
-#define GPIO_TB_IN_B     13
+#define GPIO_TB_IN_RIGHT 13
+#define GPIO_TB_IN_B     9
 #define GPIO_TB_IN_A     14
 /*
 #define GPIO_TB_IN_UP     11

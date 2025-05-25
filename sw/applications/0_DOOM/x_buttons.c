@@ -14,20 +14,21 @@
 #include "gpio.h"
 
 // --- Private defines ---
-#define GPIO_TB_IN_UP     10
+
 //#define GPIO_TB_IN_DOWN  9
 //#define GPIO_TB_IN_LEFT  11
 //#define GPIO_TB_IN_RIGHT 12
+#define GPIO_TB_IN_UP     10
 #define GPIO_TB_IN_DOWN  11
 #define GPIO_TB_IN_LEFT  12
-#define GPIO_TB_IN_RIGHT 9
-#define GPIO_TB_IN_B     13
+#define GPIO_TB_IN_RIGHT 13
+#define GPIO_TB_IN_B     9
 #define GPIO_TB_IN_A     14
 
 // --- Private variables ---
 static const uint32_t gpio_tb[6] = {
     GPIO_TB_IN_UP, GPIO_TB_IN_DOWN, GPIO_TB_IN_LEFT,
-    GPIO_TB_IN_RIGHT, GPIO_TB_IN_B, GPIO_TB_IN_A
+    GPIO_TB_IN_RIGHT, GPIO_TB_IN_B , GPIO_TB_IN_A
 };
 
 static const char button_map[6] = {
@@ -53,7 +54,7 @@ void X_ButtonsInit(void)
         return;
     }
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
         gpio_cfg_t cfg = {
             .pin = gpio_tb[i],
             .mode = GpioModeIn,
@@ -74,7 +75,7 @@ void X_ButtonsInit(void)
     gpio_assign_irq_handler(GPIO_TB_IN_DOWN,  button_down_handler);
     gpio_assign_irq_handler(GPIO_TB_IN_LEFT,  button_left_handler);
     gpio_assign_irq_handler(GPIO_TB_IN_RIGHT, button_right_handler);
-    gpio_assign_irq_handler(GPIO_TB_IN_A,     button_a_handler);
+    //gpio_assign_irq_handler(GPIO_TB_IN_A,     button_a_handler);
     gpio_assign_irq_handler(GPIO_TB_IN_B,     button_b_handler);
 
     CSR_SET_BITS(CSR_REG_MSTATUS, 0x8);
@@ -147,6 +148,7 @@ void button_right_handler(void) {
     x_button_common_handler(3);
     gpio_intr_clear_stat(GPIO_TB_IN_RIGHT);
 }
+
 
 void button_a_handler(void) {
     printf("A\n");
