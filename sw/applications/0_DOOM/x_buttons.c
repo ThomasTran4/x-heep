@@ -13,6 +13,14 @@
 #include "rv_plic.h"
 #include "gpio.h"
 
+//to change controls depending on state
+#include "m_menu.h"
+#include "g_game.h"
+
+
+extern gamestate_t gamestate;
+extern boolean menuactive;
+
 // --- Private defines ---
 
 //#define GPIO_TB_IN_DOWN  9
@@ -53,8 +61,10 @@ void X_ButtonsInit(void)
         printf("PLIC init failed\n");
         return;
     }
+    CSR_SET_BITS(CSR_REG_MSTATUS, 0x8);
+    CSR_SET_BITS(CSR_REG_MIE, (1 << 11));
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         gpio_cfg_t cfg = {
             .pin = gpio_tb[i],
             .mode = GpioModeIn,
@@ -75,40 +85,12 @@ void X_ButtonsInit(void)
     gpio_assign_irq_handler(GPIO_TB_IN_DOWN,  button_down_handler);
     gpio_assign_irq_handler(GPIO_TB_IN_LEFT,  button_left_handler);
     gpio_assign_irq_handler(GPIO_TB_IN_RIGHT, button_right_handler);
-    //gpio_assign_irq_handler(GPIO_TB_IN_A,     button_a_handler);
     gpio_assign_irq_handler(GPIO_TB_IN_B,     button_b_handler);
+    gpio_assign_irq_handler(GPIO_TB_IN_A,     button_a_handler);
 
-    CSR_SET_BITS(CSR_REG_MSTATUS, 0x8);
-    CSR_SET_BITS(CSR_REG_MIE, (1 << 11));
+    
 }
 
-// --- Private helper ---
-/*
-static void x_button_common_handler(int idx)
-{
-    static event_t event;
-
-    bool state;
-    gpio_read(gpio_tb[idx], &state);
-    printf("GPIO pin %d state: %d\n", gpio_tb[idx], state);
-
-
-    if (state) {
-        event.type = ev_keydown;
-        printf("Button %d pressed\n", idx);
-    } else {
-        event.type = ev_keyup;
-        printf("Button %d released\n", idx);
-    }
-    button_prev_state[idx] = state;
-
-
-    event.data1 = button_map[idx];
-    event.data2 = 0;
-    event.data3 = 0;
-    D_PostEvent(&event);
-}
-*/
 
 static void x_button_common_handler(int idx)
 {
@@ -121,7 +103,16 @@ static void x_button_common_handler(int idx)
     event.data1 = button_map[idx];
     event.data2 = 0;
     event.data3 = 0;
-
+    
+    
+    if (idx == 5) { // A button
+        if (menuactive || gamestate != GS_LEVEL) {
+            event.data1 = KEY_ENTER;
+        } else {
+            event.data1 = 'h'; // Shoot
+        }
+    }
+        
     D_PostEvent(&event);
 
     printf("Button %d %s (toggle mode)\n", idx, toggled_state[idx] ? "pressed" : "released");
@@ -149,6 +140,11 @@ void button_right_handler(void) {
     gpio_intr_clear_stat(GPIO_TB_IN_RIGHT);
 }
 
+void button_b_handler(void) {
+    printf("B\n");
+    x_button_common_handler(4);
+    gpio_intr_clear_stat(GPIO_TB_IN_B);
+}
 
 void button_a_handler(void) {
     printf("A\n");
@@ -156,10 +152,7 @@ void button_a_handler(void) {
     gpio_intr_clear_stat(GPIO_TB_IN_A);
 }
 
-void button_b_handler(void) {
-    x_button_common_handler(4);
-    gpio_intr_clear_stat(GPIO_TB_IN_B);
-}
+
 
 // --- Optional helpers ---
 
