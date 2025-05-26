@@ -1,6 +1,6 @@
 # DOOM Port for X-HEEP
 
-This repository contains a port of the classic DOOM game for the X-HEEP platform. The implementation targets X-HEEP prototyped on the PYNQ-Z2 FPGA and interfaces with external peripherals such as:
+This folder contains a port of the classic DOOM game for the X-HEEP platform. The implementation targets X-HEEP prototyped on the PYNQ-Z2 FPGA and interfaces with external peripherals such as:
 
 - **Adafruit Bonnet** (for joystick/button input and TFT display output)
 - **EPFL Programmer** (for the external flash)
