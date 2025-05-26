@@ -43,11 +43,11 @@ To load the bitstream onto the PYNQ-Z2 FPGA, run:
 make vivado-fpga-pgm FPGA_BOARD=pynq-z2
 ```
 
-## Changing Levels
+## Changing Levels without using the menu
 
-Since launching the game directly from the main menu does not work yet, you can modify the game behavior by editing the code.
+If you prefer to skip the in-game menu and load a specific level directly, you can modify the game startup behavior in the source code.
 
-To change the loaded level, look into `d_doomTop.c` in the `D_DoomLoop()` function. You will find this code block:
+To do this, open `d_doomTop.c` and ensure that `DEBUG_SETUP` is defined and set to `1`. Then locate the `D_DoomLoop()` function, where you'll find the following code block:
 
 ```c
 #if DEBUG_SETUP
