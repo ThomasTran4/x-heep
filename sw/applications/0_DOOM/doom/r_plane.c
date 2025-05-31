@@ -309,7 +309,7 @@ R_FindPlane
 
     memset (check->top,0xff,sizeof(check->top));
 
-    //MODIF
+    //TO AVOD DRAWNG UN UPDATED VISPLANES
     check->modified = 0;
                 
     return check;
@@ -456,7 +456,7 @@ void R_DrawPlanes (void)
 
     for (pl = visplanes ; pl < lastvisplane ; pl++)
     {
-        //MODIF
+        
         if (!pl->modified)
             continue;
 
