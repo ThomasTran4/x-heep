@@ -17,7 +17,7 @@ average_times = [18.53, 8.23, 9.04, 4.88, 4.52, 4.23]
 plt.figure(figsize=(10, 6))
 plt.bar(versions, average_times, color='red')
 plt.ylabel("Average Time per Frame (s)")
-plt.title("Average Time per Frame Comparison at 15 MHz")
+plt.title("Average Time per Frame Comparison at 15 MHz for the Demo")
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 
