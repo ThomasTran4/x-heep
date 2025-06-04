@@ -7,6 +7,8 @@ This folder contains a port of the classic DOOM game for the X-HEEP platform. Th
 
 ## Hardware Wiring
 
+The following tables and documents serve as a guide to correctly wire the ADAFRUIT peripheral to the PYNQ-Z2 board.
+
 | **Description**     | **PYNQ-Z2 PIN** | **ADAFRUIT PIN** | **Software PIN**  |
 |---------------------|-----------------|------------------|-------------------|
 | Joystick UP         | U8              | GPIO17           | GPIO 10           |
@@ -23,11 +25,23 @@ This folder contains a port of the classic DOOM game for the X-HEEP platform. Th
 | Display Power       | 3.3V            | 3.3V             |                   |
 | Ground              | GND             | GND              |                   |
 
+Mapping of PYNQ-Z2 pins to physical locations and software pins.
 
 <img src="pynq(2).png" alt="pynq" width="500"/>
+Corrected Schematic of the Pynq-Z2.
+((https://discuss.pynq.io/t/pynq-z2-pinout/4256))
+
 <img src="pinout.PNG" alt="Ada Pinout" width="500"/>
+Adafruit Bonnet Pinout diagram.
+((https://learn.adafruit.com/adafruit-1-3-color-tft-bonnet-for-raspberry-pi/pinouts#))
+
 <img src="raspPiHeader.jpg" alt="Raspberry Pi Header" width="500"/>
+Schematic of the Raspberry Pi Header of the PYNQ-Z2.
+((https://www.mouser.com/datasheet/2/744/pynqz2_user_manual_v1_0-1525725.pdf?srsltid=AfmBOorKSTgssYOMRKdV0pqAPzaTiq0tNNf1_gYh4nOhb47tzP7k0naX))
+
 <img src="wiringexample.heic" alt="Wiring Example for Reference" width="500"/>
+Wiring Example for Reference.
+
 
 
 
