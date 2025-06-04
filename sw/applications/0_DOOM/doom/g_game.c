@@ -1873,7 +1873,7 @@ G_InitNew
     else
         respawnmonsters = false;
 
-    PRINTF("NRFD-TODO: Skill adjustemnts\n");
+    //PRINTF("NRFD-TODO: Skill adjustemnts\n");
 
     /*
     if (fastparm || (skill == sk_nightmare && gameskill != sk_nightmare) )

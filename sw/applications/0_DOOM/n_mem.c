@@ -46,7 +46,7 @@
  
      void *ptr = malloc(size);
      heap_used += size;       
-     PRINTF("Alloc %d -> %p (heap used: %lu/%d)\n", size, ptr, heap_used, X_HEEP_HEAP_LIMIT);
+     //PRINTF("Alloc %d -> %p (heap used: %lu/%d)\n", size, ptr, heap_used, X_HEEP_HEAP_LIMIT);
  
      return ptr;
  }

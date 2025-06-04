@@ -1000,7 +1000,7 @@ void R_InitTextures (void)
     // Create translation table for global animation.
 
     
-    Z_Init(); //X-HEEP Comment dont uncomment this ! 
+    Z_Init(); //X-HEEP Comment dont comment this ! 
     texturetranslation = Z_Malloc ((numtextures+1)*sizeof(*texturetranslation), PU_STATIC, 0);
     
     for (i=0 ; i<numtextures ; i++)

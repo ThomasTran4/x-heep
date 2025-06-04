@@ -390,9 +390,11 @@ static void EnableLoadingDisk(void)
     if (show_diskicon)
     {
         disk_lump_name = DEH_String("STDISK");
+        /*
         V_EnableLoadingDisk(disk_lump_name,
                             SCREENWIDTH - LOADING_DISK_W,
                             SCREENHEIGHT - LOADING_DISK_H); //useless
+        */
     }
 }
 
