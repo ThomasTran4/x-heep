@@ -39,7 +39,7 @@ Adafruit Bonnet Pinout diagram.
 Schematic of the Raspberry Pi Header of the PYNQ-Z2.
 ((https://www.mouser.com/datasheet/2/744/pynqz2_user_manual_v1_0-1525725.pdf?srsltid=AfmBOorKSTgssYOMRKdV0pqAPzaTiq0tNNf1_gYh4nOhb47tzP7k0naX))
 
-<img src="wiringexample.heic" alt="Wiring Example for Reference" width="500"/>
+<img src="wiringexample.png" alt="Wiring Example for Reference" width="500"/>
 Wiring Example for Reference.
 
 
