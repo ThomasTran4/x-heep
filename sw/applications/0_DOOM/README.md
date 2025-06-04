@@ -5,6 +5,25 @@ This folder contains a port of the classic DOOM game for the X-HEEP platform. Th
 - **Adafruit Bonnet** (for joystick/button input and TFT display output)
 - **EPFL Programmer** (for the external flash)
 
+## Hardware Wiring
+
+| **Description**     | **PYNQ-Z2 PIN** | **ADAFRUIT PIN** | **Software PIN**  |
+|---------------------|-----------------|------------------|-------------------|
+| Joystick UP         | U8              | GPIO17           | GPIO 10           |
+| Joystick DOWN       | V7              | GPIO22           | GPIO 11           |
+| Joystick LEFT       | U7              | GPIO27           | GPIO 12           |
+| Joystick RIGHT      | V6              | GPIO23           | GPIO 13           |
+| Button A            | AR2             | GPIO6            | GPIO 14           |
+| Button B            | AR3             | GPIO5            | GPIO 9            |
+| Display CLK         | H15             | SCLK             | `spi_sck.o`       |
+| Display MOSI        | T12             | MOSI             | `spi_sd.io[0]`    |
+| Display CS          | F16             | TFT_CS           | `spi_csb.o`       |
+| Display DC          | V8              | TFT_DC           | GPIO 8            |
+| Display Backlight   | 5V              | TFT_LITE         |                   |
+| Display Power       | 3.3V            | 3.3V             |                   |
+| Ground              | GND             | GND              |                   |
+
+
 ## Build and Flash Instructions
 
 **Important:** If this is your first time programming the flash, set `generate_to_flash` to `true` in `r_data.c` to generate and store textures in flash. After this step is completed once, set it back to `false` to skip regeneration (which is slow).
