@@ -23,9 +23,14 @@ This folder contains a port of the classic DOOM game for the X-HEEP platform. Th
 | Display Power       | 3.3V            | 3.3V             |                   |
 | Ground              | GND             | GND              |                   |
 
-![Raspberry Pi Header](raspPiHeader.jpg)
 
-![Wiring Example for Reference](wiringexample.heic)
+<img src="pynq(2).png" alt="pynq" width="500"/>
+<img src="pinout.PNG" alt="Ada Pinout" width="500"/>
+<img src="raspPiHeader.jpg" alt="Raspberry Pi Header" width="500"/>
+<img src="wiringexample.heic" alt="Wiring Example for Reference" width="500"/>
+
+
+
 
 
 ## Build and Flash Instructions
